@@ -736,11 +736,31 @@ export default function BOMCreate({ onCancel, onSave, onEdit, mode = "create", i
       </Tabs>
 
       {/* Action Buttons */}
-      <div className="flex justify-end gap-4">
-        <Button variant="outline" onClick={onCancel}>Cancel</Button>
-        <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
-          <Save className="w-4 h-4 mr-2" />Save Complete BOM
-        </Button>
+      <div className="flex justify-between items-center">
+        <div>
+          {mode === "view" && (
+            <span className="text-sm text-slate-500 italic">View Mode - Click Edit to make changes</span>
+          )}
+          {mode === "edit" && (
+            <span className="text-sm text-green-600 italic">Edit Mode - Make changes and save</span>
+          )}
+        </div>
+        <div className="flex gap-4">
+          <Button variant="outline" onClick={onCancel}>
+            {mode === "view" ? "Back to List" : "Cancel"}
+          </Button>
+          {mode === "view" && (
+            <Button onClick={onEdit} className="bg-orange-600 hover:bg-orange-700">
+              <Save className="w-4 h-4 mr-2" />Edit BOM
+            </Button>
+          )}
+          {(mode === "create" || mode === "edit") && (
+            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+              <Save className="w-4 h-4 mr-2" />
+              {mode === "edit" ? "Update BOM" : "Save Complete BOM"}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
