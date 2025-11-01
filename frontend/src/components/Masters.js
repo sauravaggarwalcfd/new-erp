@@ -69,10 +69,10 @@ function MasterTable({ title, description, columns, data, onAdd, onEdit, onDelet
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((item) => (
+                {data.map((item, index) => (
                   <TableRow key={item.id}>
                     {columns.map((col) => (
-                      <TableCell key={col.key}>{col.render ? col.render(item) : item[col.key]}</TableCell>
+                      <TableCell key={col.key}>{col.render ? col.render(item, index) : item[col.key]}</TableCell>
                     ))}
                     <TableCell className="text-right space-x-2">
                       <Button
