@@ -12,12 +12,13 @@ import { Plus, Trash2, Save, Copy, FileText } from "lucide-react";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-export default function BOMCreate({ onCancel, onSave }) {
+export default function BOMCreate({ onCancel, onSave, onEdit, mode = "create", initialData = null }) {
   const [articles, setArticles] = useState([]);
   const [colors, setColors] = useState([]);
   const [fabrics, setFabrics] = useState([]);
   const [buyers, setBuyers] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
+  const [isEditMode, setIsEditMode] = useState(mode === "edit");
 
   // Header data (shared across all tabs)
   const [headerData, setHeaderData] = useState({
