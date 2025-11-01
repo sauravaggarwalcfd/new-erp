@@ -528,50 +528,52 @@ export default function BOMCreate({ onCancel, onSave, onEdit, mode = "create", i
                         <TableHead>READY FABRIC</TableHead>
                         <TableHead>SHORTAGE</TableHead>
                         <TableHead>GREIGE FABRIC</TableHead>
-                        <TableHead className="w-24 text-center">ACTIONS</TableHead>
+                        {!isReadOnly && <TableHead className="w-24 text-center">ACTIONS</TableHead>}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
                       {table.items.map((item, rowIndex) => (
                         <TableRow key={rowIndex}>
                           <TableCell className="text-center font-medium">{item.srNo}</TableCell>
-                          <TableCell><Input value={item.comboName} onChange={(e) => updateItem(table.id, rowIndex, "comboName", e.target.value)} className="min-w-[180px]" /></TableCell>
-                          <TableCell><Input value={item.lotNo} onChange={(e) => updateItem(table.id, rowIndex, "lotNo", e.target.value)} className="w-20" /></TableCell>
-                          <TableCell><Input type="number" value={item.lotCount} onChange={(e) => updateItem(table.id, rowIndex, "lotCount", e.target.value)} className="w-20" /></TableCell>
+                          <TableCell><Input value={item.comboName} onChange={(e) => updateItem(table.id, rowIndex, "comboName", e.target.value)} className="min-w-[180px]" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input value={item.lotNo} onChange={(e) => updateItem(table.id, rowIndex, "lotNo", e.target.value)} className="w-20" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input type="number" value={item.lotCount} onChange={(e) => updateItem(table.id, rowIndex, "lotCount", e.target.value)} className="w-20" disabled={isReadOnly} /></TableCell>
                           <TableCell>
-                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[120px]" value={item.colourId} onChange={(e) => handleColorSelect(table.id, rowIndex, e.target.value)}>
+                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[120px]" value={item.colourId} onChange={(e) => handleColorSelect(table.id, rowIndex, e.target.value)} disabled={isReadOnly}>
                               <option value="">Select Color</option>
                               {colors.map((color) => (<option key={color.id} value={color.id}>{color.name}</option>))}
                             </select>
                           </TableCell>
                           <TableCell>
-                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[200px]" onChange={(e) => handleFabricSelect(table.id, rowIndex, e.target.value)}>
+                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[200px]" onChange={(e) => handleFabricSelect(table.id, rowIndex, e.target.value)} disabled={isReadOnly}>
                               <option value="">Select Fabric</option>
                               {fabrics.map((fabric) => (<option key={fabric.id} value={fabric.id}>{fabric.fabric_name}</option>))}
                             </select>
                           </TableCell>
-                          <TableCell><Input value={item.fcNo} onChange={(e) => updateItem(table.id, rowIndex, "fcNo", e.target.value)} className="w-20" /></TableCell>
-                          <TableCell><Input type="number" step="0.01" value={item.planRat} onChange={(e) => updateItem(table.id, rowIndex, "planRat", e.target.value)} className="w-24" /></TableCell>
-                          <TableCell><Input value={item.gsm} onChange={(e) => updateItem(table.id, rowIndex, "gsm", e.target.value)} className="w-20" /></TableCell>
-                          <TableCell><Input value={item.priority} onChange={(e) => updateItem(table.id, rowIndex, "priority", e.target.value)} className="w-20" /></TableCell>
-                          <TableCell><Input value={item.component} onChange={(e) => updateItem(table.id, rowIndex, "component", e.target.value)} className="min-w-[180px]" /></TableCell>
+                          <TableCell><Input value={item.fcNo} onChange={(e) => updateItem(table.id, rowIndex, "fcNo", e.target.value)} className="w-20" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input type="number" step="0.01" value={item.planRat} onChange={(e) => updateItem(table.id, rowIndex, "planRat", e.target.value)} className="w-24" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input value={item.gsm} onChange={(e) => updateItem(table.id, rowIndex, "gsm", e.target.value)} className="w-20" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input value={item.priority} onChange={(e) => updateItem(table.id, rowIndex, "priority", e.target.value)} className="w-20" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input value={item.component} onChange={(e) => updateItem(table.id, rowIndex, "component", e.target.value)} className="min-w-[180px]" disabled={isReadOnly} /></TableCell>
                           <TableCell>
-                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" value={item.avgUnit} onChange={(e) => updateItem(table.id, rowIndex, "avgUnit", e.target.value)}>
+                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm" value={item.avgUnit} onChange={(e) => updateItem(table.id, rowIndex, "avgUnit", e.target.value)} disabled={isReadOnly}>
                               <option value="kg">kg</option><option value="Pcs">Pcs</option><option value="Meter">Meter</option>
                             </select>
                           </TableCell>
-                          <TableCell><Input type="number" value={item.orderPcs} onChange={(e) => updateItem(table.id, rowIndex, "orderPcs", e.target.value)} className="w-24" /></TableCell>
-                          <TableCell><Input type="number" value={item.extraPcs} onChange={(e) => updateItem(table.id, rowIndex, "extraPcs", e.target.value)} className="w-24" /></TableCell>
-                          <TableCell><Input type="number" value={item.wastagePcs} onChange={(e) => updateItem(table.id, rowIndex, "wastagePcs", e.target.value)} className="w-24" /></TableCell>
+                          <TableCell><Input type="number" value={item.orderPcs} onChange={(e) => updateItem(table.id, rowIndex, "orderPcs", e.target.value)} className="w-24" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input type="number" value={item.extraPcs} onChange={(e) => updateItem(table.id, rowIndex, "extraPcs", e.target.value)} className="w-24" disabled={isReadOnly} /></TableCell>
+                          <TableCell><Input type="number" value={item.wastagePcs} onChange={(e) => updateItem(table.id, rowIndex, "wastagePcs", e.target.value)} className="w-24" disabled={isReadOnly} /></TableCell>
                           <TableCell><Input value={item.readyFabricNeed} readOnly className="w-24 bg-slate-50" /></TableCell>
                           <TableCell><Input value={item.shortage} readOnly className="w-24 bg-slate-50" /></TableCell>
                           <TableCell><Input value={item.greigeFabricNeed} readOnly className="w-24 bg-slate-50" /></TableCell>
-                          <TableCell>
-                            <div className="flex gap-1 justify-center">
-                              <Button variant="ghost" size="sm" onClick={() => copyRow(table.id, rowIndex)} className="text-blue-600 hover:bg-blue-50" title="Copy Row"><Copy className="w-4 h-4" /></Button>
-                              <Button variant="ghost" size="sm" onClick={() => deleteRow(table.id, rowIndex)} className="text-red-600 hover:bg-red-50" title="Delete Row"><Trash2 className="w-4 h-4" /></Button>
-                            </div>
-                          </TableCell>
+                          {!isReadOnly && (
+                            <TableCell>
+                              <div className="flex gap-1 justify-center">
+                                <Button variant="ghost" size="sm" onClick={() => copyRow(table.id, rowIndex)} className="text-blue-600 hover:bg-blue-50" title="Copy Row"><Copy className="w-4 h-4" /></Button>
+                                <Button variant="ghost" size="sm" onClick={() => deleteRow(table.id, rowIndex)} className="text-red-600 hover:bg-red-50" title="Delete Row"><Trash2 className="w-4 h-4" /></Button>
+                              </div>
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))}
                     </TableBody>
