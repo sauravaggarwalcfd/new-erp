@@ -676,6 +676,99 @@ export default function Masters({ user, onLogout }) {
     );
   };
 
+  const FabricForm = (editItem, onSubmit) => {
+    const [formData, setFormData] = useState(editItem || {
+      item_type: "DYED",
+      count_const: "",
+      fabric_name: "",
+      composition: "",
+      add_description: "",
+      gsm: "",
+      width: "",
+      color: "",
+      final_item: "",
+      avg_roll_size: "",
+      unit: "Pcs"
+    });
+
+    return (
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(formData);
+      }} className="space-y-4 max-h-96 overflow-y-auto">
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Item Type</Label>
+            <select
+              className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+              value={formData.item_type}
+              onChange={(e) => setFormData({ ...formData, item_type: e.target.value })}
+              required
+            >
+              <option value="DYED">DYED</option>
+              <option value="GREIGE">GREIGE</option>
+              <option value="ZIP">ZIP</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label>Count/Const</Label>
+            <Input value={formData.count_const} onChange={(e) => setFormData({ ...formData, count_const: e.target.value })} required />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Fabric Name</Label>
+          <Input value={formData.fabric_name} onChange={(e) => setFormData({ ...formData, fabric_name: e.target.value })} required />
+        </div>
+        <div className="space-y-2">
+          <Label>Composition</Label>
+          <Input value={formData.composition} onChange={(e) => setFormData({ ...formData, composition: e.target.value })} required />
+        </div>
+        <div className="space-y-2">
+          <Label>Add Description</Label>
+          <Input value={formData.add_description} onChange={(e) => setFormData({ ...formData, add_description: e.target.value })} required />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>GSM (Optional)</Label>
+            <Input type="number" value={formData.gsm} onChange={(e) => setFormData({ ...formData, gsm: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label>Width (Optional)</Label>
+            <Input value={formData.width} onChange={(e) => setFormData({ ...formData, width: e.target.value })} />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <Label>Color (Optional)</Label>
+          <Input value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })} />
+        </div>
+        <div className="space-y-2">
+          <Label>Final Item</Label>
+          <Input value={formData.final_item} onChange={(e) => setFormData({ ...formData, final_item: e.target.value })} required />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label>Avg Roll Size (Optional)</Label>
+            <Input value={formData.avg_roll_size} onChange={(e) => setFormData({ ...formData, avg_roll_size: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label>Unit</Label>
+            <select
+              className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+              value={formData.unit}
+              onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+              required
+            >
+              <option value="Pcs">Pcs</option>
+              <option value="Meter">Meter</option>
+              <option value="Kg">Kg</option>
+            </select>
+          </div>
+        </div>
+        <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Save</Button>
+      </form>
+    );
+  };
+
   return (
     <Layout user={user} onLogout={onLogout}>
       <div className="space-y-6">
