@@ -1,0 +1,168 @@
+{
+  "timestamp": "2025-11-01T12:04:44.404129",
+  "total_tests": 32,
+  "passed_tests": 31,
+  "success_rate": 96.875,
+  "test_details": [
+    {
+      "test": "Register Admin User",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "User Login",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get Current User",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create Buyer",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All Buyers",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Update Buyer",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create Supplier",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All Suppliers",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create Raw Material",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All Raw Materials",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create Color",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All Colors",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create Size",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All Sizes",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create Article",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All Articles",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create BOM",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get All BOMs",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get Unassigned BOMs",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get Specific BOM",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Create MRP",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "MRP Number Format",
+      "success": true,
+      "details": "Generated: MRP-00001"
+    },
+    {
+      "test": "Get All MRPs",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get Specific MRP",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete MRP",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete BOM",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete Buyers",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete Suppliers",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete Materials",
+      "success": false,
+      "details": "Status: 404, Expected: 200, Error: Not Found"
+    },
+    {
+      "test": "Delete Colors",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete Sizes",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Delete Articles",
+      "success": true,
+      "details": "Status: 200"
+    }
+  ]
+}
