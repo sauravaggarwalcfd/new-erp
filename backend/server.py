@@ -925,6 +925,9 @@ async def upload_image(file: UploadFile = File(...), current_user: User = Depend
 # Include router
 app.include_router(api_router)
 
+# Mount static files for image serving
+app.mount("/uploads", StaticFiles(directory="/app/uploads"), name="uploads")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
