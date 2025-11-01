@@ -154,6 +154,36 @@ class ArticleCreate(BaseModel):
     description: str
     buyer_id: Optional[str] = None
 
+# Fabric Model
+class Fabric(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    item_type: str  # DYED, GREIGE, ZIP
+    count_const: str
+    fabric_name: str
+    composition: str
+    add_description: str
+    gsm: Optional[int] = None
+    width: Optional[str] = None
+    color: Optional[str] = None
+    final_item: str
+    avg_roll_size: Optional[str] = None
+    unit: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class FabricCreate(BaseModel):
+    item_type: str
+    count_const: str
+    fabric_name: str
+    composition: str
+    add_description: str
+    gsm: Optional[int] = None
+    width: Optional[str] = None
+    color: Optional[str] = None
+    final_item: str
+    avg_roll_size: Optional[str] = None
+    unit: str
+
 # BOM Models
 class BOMItem(BaseModel):
     material_id: str
