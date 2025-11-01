@@ -67,7 +67,94 @@ export default function BOMManagement({ user, onLogout }) {
     );
   }
 
-  const addItemToBOM = () => {
+  return (
+    <Layout user={user} onLogout={onLogout}>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">BOM Management</h1>
+            <p className="text-slate-600 mt-1">Create and manage Bills of Materials</p>
+          </div>
+          <Button
+            onClick={() => setShowCreateForm(true)}
+            className="bg-blue-600 hover:bg-blue-700"
+            data-testid="create-bom-button"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Create BOM
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>All BOMs</CardTitle>
+            <CardDescription>View and manage all Bills of Materials</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="text-center py-8 text-slate-500">Loading...</div>
+            ) : boms.length === 0 ? (
+              <div className="text-center py-8 text-slate-500">No BOMs found</div>
+            ) : (
+              <div className="border rounded-lg overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Article</TableHead>
+                      <TableHead>Color</TableHead>
+                      <TableHead>Total Cost</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {boms.map((bom) => (
+                      <TableRow key={bom.id}>
+                        <TableCell className="font-medium">{bom.article_name}</TableCell>
+                        <TableCell>{bom.color_name}</TableCell>
+                        <TableCell>₹{bom.total_cost.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={bom.status === "unassigned" ? "secondary" : "default"}
+                            className={bom.status === "unassigned" ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}
+                            data-testid={`bom-status-${bom.id}`}
+                          >
+                            {bom.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>{new Date(bom.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setViewBOM(bom)}
+                            data-testid={`view-bom-${bom.id}`}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteBOM(bom.id)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            data-testid={`delete-bom-${bom.id}`}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </Layout>
+  );
+}
     if (!currentItem.material_id || currentItem.avg_consumption <= 0) {
       toast.error("Please select material and enter consumption");
       return;
