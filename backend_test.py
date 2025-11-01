@@ -875,6 +875,15 @@ class GarmentERPTester:
         
         # BOM and MRP tests
         self.test_bom_creation()
+        
+        # Comprehensive BOM tests (new functionality)
+        comprehensive_bom_id = self.test_comprehensive_bom_creation()
+        if comprehensive_bom_id:
+            self.test_comprehensive_bom_retrieval(comprehensive_bom_id)
+        
+        # Multi-table BOM tests
+        self.test_multiple_tables_bom()
+        
         self.test_mrp_creation()
         
         # Cleanup tests
