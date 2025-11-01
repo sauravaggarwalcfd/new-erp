@@ -37,13 +37,42 @@ export default function BOMManagement({ user, onLogout }) {
 
   const handleSaveBOM = async (bomData) => {
     try {
-      await axios.post(`${API}/boms/comprehensive`, bomData);
-      toast.success("BOM created successfully");
+      if (selectedBOM) {
+        // Update existing BOM
+        await axios.put(`${API}/boms/${selectedBOM.id}`, bomData);
+        toast.success("BOM updated successfully");
+      } else {
+        // Create new BOM
+        await axios.post(`${API}/boms/comprehensive`, bomData);
+        toast.success("BOM created successfully");
+      }
       setShowCreateForm(false);
+      setSelectedBOM(null);
+      setViewMode("list");
       fetchBOMs();
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Error creating BOM");
+      toast.error(error.response?.data?.detail || "Error saving BOM");
     }
+  };
+
+  const handleViewBOM = async (bom) => {
+    try {
+      // Fetch full BOM details
+      const response = await axios.get(`${API}/boms/${bom.id}`);
+      setSelectedBOM(response.data);
+      setViewMode("view");
+    } catch (error) {
+      toast.error("Error loading BOM details");
+    }
+  };
+
+  const handleEditBOM = () => {
+    setViewMode("edit");
+  };
+
+  const handleCancelView = () => {
+    setSelectedBOM(null);
+    setViewMode("list");
   };
 
   const handleDeleteBOM = async (id) => {
