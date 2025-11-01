@@ -611,7 +611,7 @@ async def create_bom(bom_input: BOMCreate, current_user: User = Depends(get_curr
     await db.boms.insert_one(doc)
     return bom_obj
 
-@api_router.get("/boms", response_model=List[BOM])
+@api_router.get("/boms")
 async def get_boms(status: Optional[str] = None, current_user: User = Depends(get_current_user)):
     query = {}
     if status:
@@ -621,12 +621,20 @@ async def get_boms(status: Optional[str] = None, current_user: User = Depends(ge
     boms_regular = await db.boms.find(query, {"_id": 0}).to_list(1000)
     boms_comprehensive = await db.comprehensive_boms.find(query, {"_id": 0}).to_list(1000)
     
-    # Combine both lists
-    all_boms = boms_regular + boms_comprehensive
-    
-    for bom in all_boms:
+    # Process regular BOMs
+    for bom in boms_regular:
         if isinstance(bom.get('created_at'), str):
             bom['created_at'] = datetime.fromisoformat(bom['created_at'])
+        bom['bom_type'] = 'regular'
+    
+    # Process comprehensive BOMs
+    for bom in boms_comprehensive:
+        if isinstance(bom.get('created_at'), str):
+            bom['created_at'] = datetime.fromisoformat(bom['created_at'])
+        bom['bom_type'] = 'comprehensive'
+    
+    # Combine both lists
+    all_boms = boms_regular + boms_comprehensive
     
     return all_boms
 
