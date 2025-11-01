@@ -644,12 +644,66 @@ export default function Masters({ user, onLogout }) {
   return (
     <Layout user={user} onLogout={onLogout}>
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">Master Data Management</h1>
-          <p className="text-slate-600 mt-1">Manage all master data for garment manufacturing</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-slate-800">Master Data Management</h1>
+            <p className="text-slate-600 mt-1">Manage all master data for garment manufacturing</p>
+          </div>
+          <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="bg-green-600 hover:bg-green-700" data-testid="bulk-upload-button">
+                <Plus className="w-4 h-4 mr-2" />
+                Bulk Upload Excel
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Upload Master Data from Excel</DialogTitle>
+                <DialogDescription>
+                  Upload an Excel file with sheets: Color ID, Art No., Units Master, Components
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center">
+                  <input
+                    type="file"
+                    accept=".xlsx,.xls"
+                    onChange={(e) => setSelectedFile(e.target.files[0])}
+                    className="hidden"
+                    id="file-upload"
+                    data-testid="file-input"
+                  />
+                  <label htmlFor="file-upload" className="cursor-pointer">
+                    <div className="text-slate-600">
+                      {selectedFile ? (
+                        <div className="flex items-center justify-center gap-2">
+                          <FileText className="w-5 h-5 text-green-600" />
+                          <span className="font-medium">{selectedFile.name}</span>
+                        </div>
+                      ) : (
+                        <div>
+                          <FileText className="w-12 h-12 mx-auto mb-2 text-slate-400" />
+                          <p>Click to select Excel file</p>
+                          <p className="text-sm text-slate-500 mt-1">Supports .xlsx and .xls</p>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                </div>
+                <Button
+                  onClick={handleFileUpload}
+                  disabled={!selectedFile || uploadLoading}
+                  className="w-full bg-green-600 hover:bg-green-700"
+                  data-testid="upload-submit-button"
+                >
+                  {uploadLoading ? "Uploading..." : "Upload & Import"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
-        <Tabs defaultValue="buyers" className="space-y-6">
+        <Tabs defaultValue="buyers" className="space-y-6">{" "}
           <TabsList className="bg-white border border-slate-200">
             <TabsTrigger value="buyers" data-testid="tab-buyers">Buyers</TabsTrigger>
             <TabsTrigger value="suppliers" data-testid="tab-suppliers">Suppliers</TabsTrigger>
