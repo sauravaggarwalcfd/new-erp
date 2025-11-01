@@ -513,6 +513,40 @@ async def delete_article(article_id: str, current_user: User = Depends(get_curre
         raise HTTPException(status_code=404, detail="Article not found")
     return {"message": "Article deleted successfully"}
 
+# Fabric Routes
+@api_router.post("/fabrics", response_model=Fabric)
+async def create_fabric(fabric_input: FabricCreate, current_user: User = Depends(get_current_user)):
+    fabric_obj = Fabric(**fabric_input.model_dump())
+    doc = fabric_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    await db.fabrics.insert_one(doc)
+    return fabric_obj
+
+@api_router.get("/fabrics", response_model=List[Fabric])
+async def get_fabrics(current_user: User = Depends(get_current_user)):
+    fabrics = await db.fabrics.find({}, {"_id": 0}).to_list(1000)
+    for fabric in fabrics:
+        if isinstance(fabric['created_at'], str):
+            fabric['created_at'] = datetime.fromisoformat(fabric['created_at'])
+    return fabrics
+
+@api_router.put("/fabrics/{fabric_id}", response_model=Fabric)
+async def update_fabric(fabric_id: str, fabric_input: FabricCreate, current_user: User = Depends(get_current_user)):
+    result = await db.fabrics.update_one({"id": fabric_id}, {"$set": fabric_input.model_dump()})
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Fabric not found")
+    updated = await db.fabrics.find_one({"id": fabric_id}, {"_id": 0})
+    if isinstance(updated['created_at'], str):
+        updated['created_at'] = datetime.fromisoformat(updated['created_at'])
+    return Fabric(**updated)
+
+@api_router.delete("/fabrics/{fabric_id}")
+async def delete_fabric(fabric_id: str, current_user: User = Depends(get_current_user)):
+    result = await db.fabrics.delete_one({"id": fabric_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Fabric not found")
+    return {"message": "Fabric deleted successfully"}
+
 # BOM Routes
 @api_router.post("/boms", response_model=BOM)
 async def create_bom(bom_input: BOMCreate, current_user: User = Depends(get_current_user)):
