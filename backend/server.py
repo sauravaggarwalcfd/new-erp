@@ -641,8 +641,11 @@ async def get_bom(bom_id: str, current_user: User = Depends(get_current_user)):
 
 @api_router.delete("/boms/{bom_id}")
 async def delete_bom(bom_id: str, current_user: User = Depends(get_current_user)):
-    result = await db.boms.delete_one({"id": bom_id})
-    if result.deleted_count == 0:
+    # Try deleting from both collections
+    result1 = await db.boms.delete_one({"id": bom_id})
+    result2 = await db.comprehensive_boms.delete_one({"id": bom_id})
+    
+    if result1.deleted_count == 0 and result2.deleted_count == 0:
         raise HTTPException(status_code=404, detail="BOM not found")
     return {"message": "BOM deleted successfully"}
 
