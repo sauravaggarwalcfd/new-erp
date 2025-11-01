@@ -754,7 +754,16 @@ export default function Masters({ user, onLogout }) {
     return (
       <form onSubmit={(e) => {
         e.preventDefault();
-        onSubmit(formData);
+        // Clean the data before submitting - convert empty strings to null for optional fields
+        const cleanedData = {
+          ...formData,
+          gsm: formData.gsm ? parseInt(formData.gsm) : null,
+          width: formData.width || null,
+          color: formData.color || null,
+          avg_roll_size: formData.avg_roll_size || null,
+          image_url: formData.image_url || null
+        };
+        onSubmit(cleanedData);
       }} className="space-y-4 max-h-96 overflow-y-auto">
         <div className="space-y-2">
           <Label>Fabric Image (Optional)</Label>
