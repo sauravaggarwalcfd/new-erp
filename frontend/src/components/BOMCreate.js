@@ -598,9 +598,11 @@ export default function BOMCreate({ onCancel, onSave, onEdit, mode = "create", i
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-purple-700">{table.name}</CardTitle>
-                  <Button onClick={() => addTrimsRow(table.id)} className="bg-green-600 hover:bg-green-700">
-                    <Plus className="w-4 h-4 mr-2" />Add Trim Row
-                  </Button>
+                  {!isReadOnly && (
+                    <Button onClick={() => addTrimsRow(table.id)} className="bg-green-600 hover:bg-green-700">
+                      <Plus className="w-4 h-4 mr-2" />Add Trim Row
+                    </Button>
+                  )}
                 </div>
               </CardHeader>
               <CardContent>
