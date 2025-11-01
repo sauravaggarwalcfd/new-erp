@@ -824,29 +824,39 @@ async def upload_excel(file: UploadFile = File(...), current_user: User = Depend
             for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
                 try:
                     # Skip empty rows
-                    if not row[0]:
+                    if not row[0] or str(row[0]).strip() == "":
                         continue
                     
+                    # Helper function to clean values
+                    def clean_value(val):
+                        if val is None:
+                            return ""
+                        val_str = str(val).strip()
+                        # Handle Excel "None" strings
+                        if val_str.upper() == "NONE" or val_str == "":
+                            return ""
+                        return val_str
+                    
                     # Parse values with proper null handling
-                    item_type = str(row[0]).strip() if row[0] else ""
-                    count_const = str(row[1]).strip() if row[1] else ""
-                    fabric_name = str(row[2]).strip() if row[2] else ""
-                    composition = str(row[3]).strip() if row[3] else ""
-                    add_description = str(row[4]).strip() if row[4] else ""
+                    item_type = clean_value(row[0])
+                    count_const = clean_value(row[1])
+                    fabric_name = clean_value(row[2])
+                    composition = clean_value(row[3])
+                    add_description = clean_value(row[4])
                     
                     # Handle GSM - can be numeric or None
                     gsm = None
-                    if row[5]:
+                    if row[5] and str(row[5]).strip().upper() != "NONE":
                         try:
                             gsm = int(float(row[5]))
                         except (ValueError, TypeError):
-                            gsm = None
+                            pass
                     
-                    width = str(row[6]).strip() if row[6] else ""
-                    color = str(row[7]).strip() if row[7] else ""
-                    final_item = str(row[8]).strip() if row[8] else ""
-                    avg_roll_size = str(row[9]).strip() if row[9] else ""
-                    unit = str(row[10]).strip() if row[10] else "Pcs"
+                    width = clean_value(row[6])
+                    color = clean_value(row[7])
+                    final_item = clean_value(row[8])
+                    avg_roll_size = clean_value(row[9])
+                    unit = clean_value(row[10]) or "Pcs"
                     
                     fabric_obj = Fabric(
                         item_type=item_type,
