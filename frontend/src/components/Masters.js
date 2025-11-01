@@ -688,14 +688,60 @@ export default function Masters({ user, onLogout }) {
       color: "",
       final_item: "",
       avg_roll_size: "",
-      unit: "Pcs"
+      unit: "Pcs",
+      image_url: ""
     });
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      setUploading(true);
+      const formDataImg = new FormData();
+      formDataImg.append("file", file);
+
+      try {
+        const response = await axios.post(`${API}/upload-image`, formDataImg, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        });
+        setFormData({ ...formData, image_url: response.data.image_url });
+        toast.success("Image uploaded successfully");
+      } catch (error) {
+        toast.error("Error uploading image");
+      } finally {
+        setUploading(false);
+      }
+    };
 
     return (
       <form onSubmit={(e) => {
         e.preventDefault();
         onSubmit(formData);
       }} className="space-y-4 max-h-96 overflow-y-auto">
+        <div className="space-y-2">
+          <Label>Fabric Image (Optional)</Label>
+          <div className="flex items-center gap-4">
+            {formData.image_url && (
+              <div className="w-20 h-20 border rounded overflow-hidden">
+                <img 
+                  src={`${process.env.REACT_APP_BACKEND_URL}${formData.image_url}`} 
+                  alt="Fabric" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+            <Input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload}
+              disabled={uploading}
+            />
+          </div>
+          {uploading && <p className="text-sm text-slate-500">Uploading...</p>}
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Item Type</Label>
