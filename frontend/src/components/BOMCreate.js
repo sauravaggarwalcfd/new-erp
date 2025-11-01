@@ -306,7 +306,7 @@ export default function BOMCreate({ onCancel, onSave }) {
                   <TableHead>READY FABRIC</TableHead>
                   <TableHead>SHORTAGE</TableHead>
                   <TableHead>GREIGE FABRIC</TableHead>
-                  <TableHead className="w-12">Actions</TableHead>
+                  <TableHead className="w-24 text-center">ACTIONS</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
