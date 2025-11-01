@@ -175,7 +175,7 @@ export default function Masters({ user, onLogout }) {
         toast.warning(`${results.errors.length} errors occurred during import`);
       }
       
-      toast.info(`Added: ${results.colors_added} colors, ${results.articles_added} articles, ${results.sizes_added} units, ${results.raw_materials_added} components`);
+      toast.info(`Added: ${results.colors_added} colors, ${results.articles_added} articles, ${results.sizes_added} units, ${results.raw_materials_added} components, ${results.fabrics_added} fabrics`);
       
       setUploadDialogOpen(false);
       setSelectedFile(null);
