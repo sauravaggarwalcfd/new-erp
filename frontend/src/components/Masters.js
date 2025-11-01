@@ -114,6 +114,7 @@ export default function Masters({ user, onLogout }) {
   const [colors, setColors] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [articles, setArticles] = useState([]);
+  const [fabrics, setFabrics] = useState([]);
   const [loading, setLoading] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [uploadLoading, setUploadLoading] = useState(false);
