@@ -818,6 +818,33 @@ async def upload_excel(file: UploadFile = File(...), current_user: User = Depend
                 except Exception as e:
                     results["errors"].append(f"Components sheet row {row_idx}: {str(e)}")
         
+        # Process Fabric Master Data sheet
+        if "Sheet1" in workbook.sheetnames or "FABRIC MASTER DATA" in workbook.sheetnames:
+            sheet_name = "Sheet1" if "Sheet1" in workbook.sheetnames else "FABRIC MASTER DATA"
+            sheet = workbook[sheet_name]
+            for row_idx, row in enumerate(sheet.iter_rows(min_row=2, values_only=True), start=2):
+                try:
+                    if row[0]:  # Check if ITEM TYPE exists
+                        fabric_obj = Fabric(
+                            item_type=str(row[0]).strip() if row[0] else "",
+                            count_const=str(row[1]).strip() if row[1] else "",
+                            fabric_name=str(row[2]).strip() if row[2] else "",
+                            composition=str(row[3]).strip() if row[3] else "",
+                            add_description=str(row[4]).strip() if row[4] else "",
+                            gsm=int(row[5]) if row[5] and str(row[5]).isdigit() else None,
+                            width=str(row[6]).strip() if row[6] else None,
+                            color=str(row[7]).strip() if row[7] else None,
+                            final_item=str(row[8]).strip() if row[8] else "",
+                            avg_roll_size=str(row[9]).strip() if row[9] else None,
+                            unit=str(row[10]).strip() if row[10] else "Pcs"
+                        )
+                        doc = fabric_obj.model_dump()
+                        doc['created_at'] = doc['created_at'].isoformat()
+                        await db.fabrics.insert_one(doc)
+                        results["fabrics_added"] += 1
+                except Exception as e:
+                    results["errors"].append(f"Fabric sheet row {row_idx}: {str(e)}")
+        
         return {
             "message": "Excel file processed successfully",
             "results": results
