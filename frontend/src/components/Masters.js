@@ -677,7 +677,7 @@ export default function Masters({ user, onLogout }) {
   };
 
   const FabricForm = (editItem, onSubmit) => {
-    const [formData, setFormData] = useState(editItem || {
+    const [formData, setFormData] = useState({
       item_type: "DYED",
       count_const: "",
       fabric_name: "",
@@ -692,6 +692,41 @@ export default function Masters({ user, onLogout }) {
       image_url: ""
     });
     const [uploading, setUploading] = useState(false);
+
+    // Update form data when editItem changes
+    React.useEffect(() => {
+      if (editItem) {
+        setFormData({
+          item_type: editItem.item_type || "DYED",
+          count_const: editItem.count_const || "",
+          fabric_name: editItem.fabric_name || "",
+          composition: editItem.composition || "",
+          add_description: editItem.add_description || "",
+          gsm: editItem.gsm || "",
+          width: editItem.width || "",
+          color: editItem.color || "",
+          final_item: editItem.final_item || "",
+          avg_roll_size: editItem.avg_roll_size || "",
+          unit: editItem.unit || "Pcs",
+          image_url: editItem.image_url || ""
+        });
+      } else {
+        setFormData({
+          item_type: "DYED",
+          count_const: "",
+          fabric_name: "",
+          composition: "",
+          add_description: "",
+          gsm: "",
+          width: "",
+          color: "",
+          final_item: "",
+          avg_roll_size: "",
+          unit: "Pcs",
+          image_url: ""
+        });
+      }
+    }, [editItem]);
 
     const handleImageUpload = async (e) => {
       const file = e.target.files[0];
@@ -758,43 +793,43 @@ export default function Masters({ user, onLogout }) {
           </div>
           <div className="space-y-2">
             <Label>Count/Const</Label>
-            <Input value={formData.count_const || ""} onChange={(e) => setFormData({ ...formData, count_const: e.target.value })} required />
+            <Input value={formData.count_const} onChange={(e) => setFormData({ ...formData, count_const: e.target.value })} required />
           </div>
         </div>
         <div className="space-y-2">
           <Label>Fabric Name</Label>
-          <Input value={formData.fabric_name || ""} onChange={(e) => setFormData({ ...formData, fabric_name: e.target.value })} required />
+          <Input value={formData.fabric_name} onChange={(e) => setFormData({ ...formData, fabric_name: e.target.value })} required />
         </div>
         <div className="space-y-2">
           <Label>Composition</Label>
-          <Input value={formData.composition || ""} onChange={(e) => setFormData({ ...formData, composition: e.target.value })} required />
+          <Input value={formData.composition} onChange={(e) => setFormData({ ...formData, composition: e.target.value })} required />
         </div>
         <div className="space-y-2">
           <Label>Add Description</Label>
-          <Input value={formData.add_description || ""} onChange={(e) => setFormData({ ...formData, add_description: e.target.value })} required />
+          <Input value={formData.add_description} onChange={(e) => setFormData({ ...formData, add_description: e.target.value })} required />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>GSM (Optional)</Label>
-            <Input type="number" value={formData.gsm || ""} onChange={(e) => setFormData({ ...formData, gsm: e.target.value })} />
+            <Input type="number" value={formData.gsm} onChange={(e) => setFormData({ ...formData, gsm: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label>Width (Optional)</Label>
-            <Input value={formData.width || ""} onChange={(e) => setFormData({ ...formData, width: e.target.value })} />
+            <Input value={formData.width} onChange={(e) => setFormData({ ...formData, width: e.target.value })} />
           </div>
         </div>
         <div className="space-y-2">
           <Label>Color (Optional)</Label>
-          <Input value={formData.color || ""} onChange={(e) => setFormData({ ...formData, color: e.target.value })} />
+          <Input value={formData.color} onChange={(e) => setFormData({ ...formData, color: e.target.value })} />
         </div>
         <div className="space-y-2">
           <Label>Final Item</Label>
-          <Input value={formData.final_item || ""} onChange={(e) => setFormData({ ...formData, final_item: e.target.value })} required />
+          <Input value={formData.final_item} onChange={(e) => setFormData({ ...formData, final_item: e.target.value })} required />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label>Avg Roll Size (Optional)</Label>
-            <Input value={formData.avg_roll_size || ""} onChange={(e) => setFormData({ ...formData, avg_roll_size: e.target.value })} />
+            <Input value={formData.avg_roll_size} onChange={(e) => setFormData({ ...formData, avg_roll_size: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label>Unit</Label>
