@@ -555,26 +555,21 @@ async def delete_fabric(fabric_id: str, current_user: User = Depends(get_current
 @api_router.post("/boms/comprehensive")
 async def create_comprehensive_bom(bom_data: dict, current_user: User = Depends(get_current_user)):
     try:
-        # Extract header and items
-        header = {
-            "date": bom_data.get("date"),
-            "imageReference": bom_data.get("imageReference"),
-            "artNo": bom_data.get("artNo"),
-            "planQty": bom_data.get("planQty"),
-            "setNo": bom_data.get("setNo"),
-            "buyer": bom_data.get("buyer"),
-            "remarks": bom_data.get("remarks"),
-            "styleNumber": bom_data.get("styleNumber")
-        }
-        items = bom_data.get("items", [])
+        # Extract header and all tabs data
+        header = bom_data.get("header", {})
+        fabric_tables = bom_data.get("fabricTables", [])
+        trims_tables = bom_data.get("trimsTables", [])
+        operations = bom_data.get("operations", [])
         
-        # Create BOM document
+        # Create BOM document with all three tabs
         bom_id = str(uuid.uuid4())
         bom_doc = {
             "id": bom_id,
             "header": header,
-            "items": items,
-            "status": "unassigned",
+            "fabricTables": fabric_tables,
+            "trimsTables": trims_tables,
+            "operations": operations,
+            "status": "assigned",
             "created_at": datetime.now(timezone.utc).isoformat(),
             "created_by": current_user.username
         }
@@ -582,7 +577,7 @@ async def create_comprehensive_bom(bom_data: dict, current_user: User = Depends(
         await db.comprehensive_boms.insert_one(bom_doc)
         
         return {
-            "message": "BOM created successfully",
+            "message": "BOM created successfully with all tabs",
             "bom_id": bom_id
         }
     except Exception as e:
