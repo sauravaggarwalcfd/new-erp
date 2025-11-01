@@ -148,6 +148,42 @@ export default function Masters({ user, onLogout }) {
     }
   };
 
+  const handleFileUpload = async () => {
+    if (!selectedFile) {
+      toast.error("Please select a file first");
+      return;
+    }
+
+    setUploadLoading(true);
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+
+    try {
+      const response = await axios.post(`${API}/upload-excel`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+
+      toast.success(response.data.message);
+      
+      const results = response.data.results;
+      if (results.errors && results.errors.length > 0) {
+        toast.warning(`${results.errors.length} errors occurred during import`);
+      }
+      
+      toast.info(`Added: ${results.colors_added} colors, ${results.articles_added} articles, ${results.sizes_added} units, ${results.raw_materials_added} components`);
+      
+      setUploadDialogOpen(false);
+      setSelectedFile(null);
+      fetchAllMasters();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || "Error uploading file");
+    } finally {
+      setUploadLoading(false);
+    }
+  };
+
   // Buyer handlers
   const handleAddBuyer = async (data) => {
     try {
