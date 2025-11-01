@@ -105,7 +105,32 @@ export default function BOMCreate({ onCancel, onSave, onEdit, mode = "create", i
 
   useEffect(() => {
     fetchMasterData();
+    
+    // Load initial data if in view/edit mode
+    if (initialData) {
+      loadInitialData(initialData);
+    }
   }, []);
+
+  useEffect(() => {
+    // Update edit mode when mode prop changes
+    setIsEditMode(mode === "edit");
+  }, [mode]);
+
+  const loadInitialData = (data) => {
+    if (data.header) {
+      setHeaderData(data.header);
+    }
+    if (data.fabricTables) {
+      setBomTables(data.fabricTables);
+    }
+    if (data.trimsTables) {
+      setTrimsTables(data.trimsTables);
+    }
+    if (data.operations) {
+      setOperationsItems(data.operations);
+    }
+  };
 
   const fetchMasterData = async () => {
     try {
