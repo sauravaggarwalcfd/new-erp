@@ -115,6 +115,9 @@ export default function Masters({ user, onLogout }) {
   const [sizes, setSizes] = useState([]);
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   useEffect(() => {
     fetchAllMasters();
