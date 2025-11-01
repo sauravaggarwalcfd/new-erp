@@ -125,15 +125,15 @@ export default function BOMCreate({ onCancel, onSave }) {
     }
   };
 
-  // Get all combo names from FABRIC tables
-  const getAllComboNames = () => {
+  // Get combo names from a specific FABRIC table
+  const getComboNamesFromTable = (tableId) => {
+    const fabricTable = bomTables.find(t => t.id === tableId);
+    if (!fabricTable) return [];
     const comboNames = [];
-    bomTables.forEach(table => {
-      table.items.forEach(item => {
-        if (item.comboName && !comboNames.includes(item.comboName)) {
-          comboNames.push(item.comboName);
-        }
-      });
+    fabricTable.items.forEach(item => {
+      if (item.comboName && !comboNames.includes(item.comboName)) {
+        comboNames.push(item.comboName);
+      }
     });
     return comboNames;
   };
