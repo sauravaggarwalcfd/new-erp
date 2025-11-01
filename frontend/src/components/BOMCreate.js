@@ -558,72 +558,74 @@ export default function BOMCreate({ onCancel, onSave }) {
         </TabsContent>
 
         {/* TRIMS TAB CONTENT */}
-        <TabsContent value="trims">
-          <Card>
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>TRIMS Details</CardTitle>
-                <Button onClick={addTrimsRow} className="bg-green-600 hover:bg-green-700">
-                  <Plus className="w-4 h-4 mr-2" />Add Trim Row
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="border rounded-lg overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-slate-100">
-                      <TableHead className="w-12">SR NO</TableHead>
-                      <TableHead>COMBO NAME</TableHead>
-                      <TableHead>TRIM TYPE</TableHead>
-                      <TableHead>ITEM NAME</TableHead>
-                      <TableHead>ITEM CODE</TableHead>
-                      <TableHead>COLOR</TableHead>
-                      <TableHead>SIZE</TableHead>
-                      <TableHead>QUANTITY</TableHead>
-                      <TableHead>SUPPLIER</TableHead>
-                      <TableHead>UNIT PRICE</TableHead>
-                      <TableHead>TOTAL COST</TableHead>
-                      <TableHead className="w-24 text-center">ACTIONS</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {trimsItems.map((item, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="text-center font-medium">{item.srNo}</TableCell>
-                        <TableCell>
-                          <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[150px]" value={item.comboName} onChange={(e) => updateTrimsItem(index, "comboName", e.target.value)}>
-                            <option value="">Select Combo</option>
-                            {getAllComboNames().map((name, i) => (<option key={i} value={name}>{name}</option>))}
-                          </select>
-                        </TableCell>
-                        <TableCell><Input value={item.trimType} onChange={(e) => updateTrimsItem(index, "trimType", e.target.value)} placeholder="Button/Zipper/Label" className="min-w-[150px]" /></TableCell>
-                        <TableCell><Input value={item.itemName} onChange={(e) => updateTrimsItem(index, "itemName", e.target.value)} className="min-w-[150px]" /></TableCell>
-                        <TableCell><Input value={item.itemCode} onChange={(e) => updateTrimsItem(index, "itemCode", e.target.value)} className="w-28" /></TableCell>
-                        <TableCell><Input value={item.color} onChange={(e) => updateTrimsItem(index, "color", e.target.value)} className="w-24" /></TableCell>
-                        <TableCell><Input value={item.size} onChange={(e) => updateTrimsItem(index, "size", e.target.value)} className="w-20" /></TableCell>
-                        <TableCell><Input type="number" value={item.quantity} onChange={(e) => updateTrimsItem(index, "quantity", e.target.value)} className="w-24" /></TableCell>
-                        <TableCell>
-                          <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[150px]" value={item.supplier} onChange={(e) => updateTrimsItem(index, "supplier", e.target.value)}>
-                            <option value="">Select Supplier</option>
-                            {suppliers.map((sup) => (<option key={sup.id} value={sup.name}>{sup.name}</option>))}
-                          </select>
-                        </TableCell>
-                        <TableCell><Input type="number" step="0.01" value={item.unitPrice} onChange={(e) => updateTrimsItem(index, "unitPrice", e.target.value)} className="w-24" /></TableCell>
-                        <TableCell><Input value={item.totalCost} readOnly className="w-24 bg-slate-50" /></TableCell>
-                        <TableCell>
-                          <div className="flex gap-1 justify-center">
-                            <Button variant="ghost" size="sm" onClick={() => copyTrimsRow(index)} className="text-blue-600 hover:bg-blue-50"><Copy className="w-4 h-4" /></Button>
-                            <Button variant="ghost" size="sm" onClick={() => deleteTrimsRow(index)} className="text-red-600 hover:bg-red-50"><Trash2 className="w-4 h-4" /></Button>
-                          </div>
-                        </TableCell>
+        <TabsContent value="trims" className="space-y-6">
+          {trimsTables.map((table) => (
+            <Card key={table.id}>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-purple-700">{table.name}</CardTitle>
+                  <Button onClick={() => addTrimsRow(table.id)} className="bg-green-600 hover:bg-green-700">
+                    <Plus className="w-4 h-4 mr-2" />Add Trim Row
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-slate-100">
+                        <TableHead className="w-12">SR NO</TableHead>
+                        <TableHead>COMBO NAME</TableHead>
+                        <TableHead>TRIM TYPE</TableHead>
+                        <TableHead>ITEM NAME</TableHead>
+                        <TableHead>ITEM CODE</TableHead>
+                        <TableHead>COLOR</TableHead>
+                        <TableHead>SIZE</TableHead>
+                        <TableHead>QUANTITY</TableHead>
+                        <TableHead>SUPPLIER</TableHead>
+                        <TableHead>UNIT PRICE</TableHead>
+                        <TableHead>TOTAL COST</TableHead>
+                        <TableHead className="w-24 text-center">ACTIONS</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
+                    </TableHeader>
+                    <TableBody>
+                      {table.items.map((item, rowIndex) => (
+                        <TableRow key={rowIndex}>
+                          <TableCell className="text-center font-medium">{item.srNo}</TableCell>
+                          <TableCell>
+                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[150px]" value={item.comboName} onChange={(e) => updateTrimsItem(table.id, rowIndex, "comboName", e.target.value)}>
+                              <option value="">Select Combo</option>
+                              {getComboNamesFromTable(table.id).map((name, i) => (<option key={i} value={name}>{name}</option>))}
+                            </select>
+                          </TableCell>
+                          <TableCell><Input value={item.trimType} onChange={(e) => updateTrimsItem(table.id, rowIndex, "trimType", e.target.value)} placeholder="Button/Zipper/Label" className="min-w-[150px]" /></TableCell>
+                          <TableCell><Input value={item.itemName} onChange={(e) => updateTrimsItem(table.id, rowIndex, "itemName", e.target.value)} className="min-w-[150px]" /></TableCell>
+                          <TableCell><Input value={item.itemCode} onChange={(e) => updateTrimsItem(table.id, rowIndex, "itemCode", e.target.value)} className="w-28" /></TableCell>
+                          <TableCell><Input value={item.color} onChange={(e) => updateTrimsItem(table.id, rowIndex, "color", e.target.value)} className="w-24" /></TableCell>
+                          <TableCell><Input value={item.size} onChange={(e) => updateTrimsItem(table.id, rowIndex, "size", e.target.value)} className="w-20" /></TableCell>
+                          <TableCell><Input type="number" value={item.quantity} onChange={(e) => updateTrimsItem(table.id, rowIndex, "quantity", e.target.value)} className="w-24" /></TableCell>
+                          <TableCell>
+                            <select className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm min-w-[150px]" value={item.supplier} onChange={(e) => updateTrimsItem(table.id, rowIndex, "supplier", e.target.value)}>
+                              <option value="">Select Supplier</option>
+                              {suppliers.map((sup) => (<option key={sup.id} value={sup.name}>{sup.name}</option>))}
+                            </select>
+                          </TableCell>
+                          <TableCell><Input type="number" step="0.01" value={item.unitPrice} onChange={(e) => updateTrimsItem(table.id, rowIndex, "unitPrice", e.target.value)} className="w-24" /></TableCell>
+                          <TableCell><Input value={item.totalCost} readOnly className="w-24 bg-slate-50" /></TableCell>
+                          <TableCell>
+                            <div className="flex gap-1 justify-center">
+                              <Button variant="ghost" size="sm" onClick={() => copyTrimsRow(table.id, rowIndex)} className="text-blue-600 hover:bg-blue-50" title="Copy Row"><Copy className="w-4 h-4" /></Button>
+                              <Button variant="ghost" size="sm" onClick={() => deleteTrimsRow(table.id, rowIndex)} className="text-red-600 hover:bg-red-50" title="Delete Row"><Trash2 className="w-4 h-4" /></Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
         </TabsContent>
 
         {/* OPERATIONS ROUTING TAB CONTENT */}
