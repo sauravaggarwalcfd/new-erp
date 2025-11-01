@@ -972,7 +972,10 @@ export default function Masters({ user, onLogout }) {
                 { key: "count_const", label: "Count/Const" },
                 { key: "fabric_name", label: "Fabric Name" },
                 { key: "composition", label: "Composition" },
-                { key: "final_item", label: "Final Item" }
+                { key: "add_description", label: "Description" },
+                { key: "color", label: "Color" },
+                { key: "avg_roll_size", label: "Avg Roll Size" },
+                { key: "unit", label: "Unit" }
               ]}
               data={fabrics}
               onAdd={handleAddFabric}
