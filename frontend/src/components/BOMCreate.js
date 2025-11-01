@@ -113,6 +113,17 @@ export default function BOMCreate({ onCancel, onSave }) {
     setBomItems(newItems);
   };
 
+  const copyRow = (index) => {
+    const itemToCopy = { ...bomItems[index] };
+    // Create a new copy with new serial number
+    const newItem = {
+      ...itemToCopy,
+      srNo: bomItems.length + 1
+    };
+    setBomItems([...bomItems, newItem]);
+    toast.success("Row copied successfully");
+  };
+
   const updateItem = (index, field, value) => {
     const newItems = [...bomItems];
     newItems[index][field] = value;
