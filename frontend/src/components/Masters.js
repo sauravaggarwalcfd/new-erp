@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileText } from "lucide-react";
 import MasterViewTypes from "./MasterViewTypes";
+import TableControls from "./TableControls";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
