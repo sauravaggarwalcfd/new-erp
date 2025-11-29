@@ -122,13 +122,111 @@ export default function DynamicMasterManager({ config, onBack }) {
     }
   };
 
-  const filteredData = data.filter(item => {
-    if (!searchTerm) return true;
-    return config.fields.some(field => {
-      const value = item[field.name];
-      return value && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+  // Filtering logic
+  const applyFilters = (items) => {
+    let filtered = items;
+
+    // Apply search term
+    if (searchTerm) {
+      filtered = filtered.filter(item => {
+        return config.fields.some(field => {
+          const value = item[field.name];
+          return value && value.toString().toLowerCase().includes(searchTerm.toLowerCase());
+        });
+      });
+    }
+
+    // Apply column filters
+    Object.keys(filters).forEach(fieldName => {
+      const filterValue = filters[fieldName];
+      if (filterValue) {
+        filtered = filtered.filter(item => {
+          const value = item[fieldName];
+          if (value === undefined || value === null) return false;
+          return value.toString().toLowerCase().includes(filterValue.toLowerCase());
+        });
+      }
     });
-  });
+
+    return filtered;
+  };
+
+  // Sorting logic
+  const applySorting = (items) => {
+    if (!sortConfig.field) return items;
+
+    const sorted = [...items].sort((a, b) => {
+      const aValue = a[sortConfig.field] || "";
+      const bValue = b[sortConfig.field] || "";
+
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
+      }
+
+      const aStr = aValue.toString().toLowerCase();
+      const bStr = bValue.toString().toLowerCase();
+
+      if (aStr < bStr) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aStr > bStr) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  };
+
+  // Grouping logic
+  const applyGrouping = (items) => {
+    if (!groupBy) return { ungrouped: items };
+
+    const grouped = items.reduce((acc, item) => {
+      const groupValue = item[groupBy] || "Ungrouped";
+      if (!acc[groupValue]) {
+        acc[groupValue] = [];
+      }
+      acc[groupValue].push(item);
+      return acc;
+    }, {});
+
+    return grouped;
+  };
+
+  // Handle sorting
+  const handleSort = (fieldName) => {
+    let direction = 'asc';
+    if (sortConfig.field === fieldName) {
+      if (sortConfig.direction === 'asc') {
+        direction = 'desc';
+      } else if (sortConfig.direction === 'desc') {
+        direction = null;
+      }
+    }
+
+    setSortConfig({
+      field: direction ? fieldName : null,
+      direction: direction
+    });
+  };
+
+  // Handle filter change
+  const handleFilterChange = (fieldName, value) => {
+    setFilters({
+      ...filters,
+      [fieldName]: value
+    });
+  };
+
+  // Clear all filters
+  const clearFilters = () => {
+    setFilters({});
+    setSearchTerm("");
+    setSortConfig({ field: null, direction: null });
+    setGroupBy(null);
+  };
+
+  // Process data with filters, sorting, and grouping
+  const filteredData = applyFilters(data);
+  const sortedData = applySorting(filteredData);
+  const groupedData = applyGrouping(sortedData);
 
   const renderFormField = (field) => {
     const value = formData[field.name] || "";
