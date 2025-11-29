@@ -150,6 +150,7 @@ export default function TableControls({ data, columns }) {
     setSearchTerm("");
     setSortConfig({ field: null, direction: null });
     setGroupBy(null);
+    setSubGroupBy(null);
   };
 
   // Process data through all filters
