@@ -16,13 +16,13 @@ import TableControls from "./TableControls";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Generic Master Component with View Types
+// Generic Master Component with View Types and Controls
 function MasterTable({ title, description, columns, data, onAdd, onEdit, onDelete, renderForm, loading }) {
   const [open, setOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
   const [currentView, setCurrentView] = useState('grid');
 
-  // Convert columns to config format for MasterViewTypes
+  // Convert columns to config format for MasterViewTypes and TableControls
   const config = {
     name: title,
     fields: columns.map((col, idx) => ({
@@ -33,91 +33,86 @@ function MasterTable({ title, description, columns, data, onAdd, onEdit, onDelet
     }))
   };
 
+  // Use TableControls for filtering, sorting, and grouping
+  const {
+    processedData,
+    groupedData,
+    isGrouped,
+    isNestedGrouping,
+    groupBy,
+    subGroupBy,
+    sortConfig,
+    handleSort,
+    renderControls
+  } = TableControls({
+    data: data || [],
+    columns: config.fields
+  });
+
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-center">
-          <div>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
+    <div className="space-y-6">
+      {/* Header */}
+      <Card>
+        <CardHeader>
+          <div className="flex justify-between items-center">
+            <div>
+              <CardTitle>{title}</CardTitle>
+              <CardDescription>{description}</CardDescription>
+            </div>
+            <Dialog open={open} onOpenChange={setOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => setEditItem(null)} className="bg-blue-600 hover:bg-blue-700" data-testid={`add-${title.toLowerCase()}`}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add {title.slice(0, -1)}
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>{editItem ? "Edit" : "Add"} {title.slice(0, -1)}</DialogTitle>
+                  <DialogDescription>Fill in the details below</DialogDescription>
+                </DialogHeader>
+                {renderForm(editItem, (data) => {
+                  if (editItem) {
+                    onEdit(editItem.id, data);
+                  } else {
+                    onAdd(data);
+                  }
+                  setOpen(false);
+                  setEditItem(null);
+                })}
+              </DialogContent>
+            </Dialog>
           </div>
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setEditItem(null)} className="bg-blue-600 hover:bg-blue-700" data-testid={`add-${title.toLowerCase()}`}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add {title.slice(0, -1)}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{editItem ? "Edit" : "Add"} {title.slice(0, -1)}</DialogTitle>
-                <DialogDescription>Fill in the details below</DialogDescription>
-              </DialogHeader>
-              {renderForm(editItem, (data) => {
-                if (editItem) {
-                  onEdit(editItem.id, data);
-                } else {
-                  onAdd(data);
-                }
-                setOpen(false);
-                setEditItem(null);
-              })}
-            </DialogContent>
-          </Dialog>
-        </div>
-      </CardHeader>
-      <CardContent>
-        {loading ? (
-          <div className="text-center py-8 text-slate-500">Loading...</div>
-        ) : data.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">No {title.toLowerCase()} found</div>
-        ) : (
-          <div className="border rounded-lg overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {columns.map((col) => (
-                    <TableHead key={col.key}>{col.label}</TableHead>
-                  ))}
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.map((item, index) => (
-                  <TableRow key={item.id}>
-                    {columns.map((col) => (
-                      <TableCell key={col.key}>{col.render ? col.render(item, index) : item[col.key]}</TableCell>
-                    ))}
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setEditItem(item);
-                          setOpen(true);
-                        }}
-                        data-testid={`edit-${title.toLowerCase()}-${item.id}`}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(item.id)}
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                        data-testid={`delete-${title.toLowerCase()}-${item.id}`}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardHeader>
+      </Card>
+
+      {/* Table Controls - Filter, Sort, Group */}
+      {!loading && data.length > 0 && renderControls()}
+
+      {/* Data Display */}
+      {loading ? (
+        <Card>
+          <CardContent className="py-8">
+            <div className="text-center text-slate-500">Loading...</div>
+          </CardContent>
+        </Card>
+      ) : data.length === 0 ? (
+        <Card>
+          <CardContent className="py-8">
+            <div className="text-center text-slate-500">No {title.toLowerCase()} found</div>
+          </CardContent>
+        </Card>
+      ) : (
+        <MasterViewTypes
+          data={processedData}
+          config={config}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          currentView={currentView}
+          onViewChange={setCurrentView}
+        />
+      )}
+    </div>
   );
 }
 
