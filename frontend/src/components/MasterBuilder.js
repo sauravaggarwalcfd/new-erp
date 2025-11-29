@@ -83,7 +83,11 @@ export default function MasterBuilder({ user, onLogout }) {
       setSelectedConfig(null);
       fetchMasterConfigs();
     } catch (error) {
-      toast.error(error.response?.data?.detail || "Error saving configuration");
+      console.error("Save error:", error.response?.data);
+      const errorMsg = typeof error.response?.data?.detail === 'string' 
+        ? error.response.data.detail 
+        : "Error saving configuration. Please check all fields.";
+      toast.error(errorMsg);
     }
   };
 
