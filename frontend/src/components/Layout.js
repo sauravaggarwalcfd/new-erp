@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Package, LayoutDashboard, Database, FileText, ClipboardList, LogOut, User } from "lucide-react";
+import { Package, LayoutDashboard, Database, FileText, ClipboardList, LogOut, User, Wrench } from "lucide-react";
 
 export default function Layout({ user, onLogout, children }) {
   const location = useLocation();
@@ -8,6 +8,7 @@ export default function Layout({ user, onLogout, children }) {
   const navItems = [
     { path: "/", label: "Dashboard", icon: LayoutDashboard },
     { path: "/masters", label: "Masters", icon: Database },
+    { path: "/master-builder", label: "Master Builder", icon: Wrench },
     { path: "/boms", label: "BOM Management", icon: FileText },
     { path: "/mrp", label: "MRP Management", icon: ClipboardList }
   ];
