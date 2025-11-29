@@ -1047,6 +1047,7 @@ async def delete_dynamic_master_data(config_id: str, data_id: str, current_user:
     except HTTPException:
         raise
     except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error deleting master data: {str(e)}")
 
 # ============================================================================
 # MASTER BUILDER INITIALIZATION - Pre-configured Masters
