@@ -11,6 +11,7 @@ import {
   Plus, Edit, Trash2, Upload, Download, ArrowLeft, Search,
   Filter, ArrowUpDown, ArrowUp, ArrowDown, Group, X
 } from "lucide-react";
+import MasterViewTypes from "./MasterViewTypes";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
