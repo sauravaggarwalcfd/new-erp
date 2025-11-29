@@ -315,6 +315,9 @@ export default function TableControls({ data, columns }) {
     processedData: sortedData,
     groupedData: groupedData,
     isGrouped: !!groupBy,
+    isNestedGrouping: isNestedGrouping,
+    groupBy: groupBy,
+    subGroupBy: subGroupBy,
     sortConfig,
     handleSort,
     renderControls
