@@ -491,14 +491,48 @@ export default function DynamicMasterManager({ config, onBack }) {
       </Card>
 
       {/* Data Display with View Types */}
-      <MasterViewTypes
-        data={sortedData}
-        config={config}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        currentView={currentView}
-        onViewChange={setCurrentView}
-      />
+      {groupBy ? (
+        <div className="space-y-4">
+          <Card>
+            <CardHeader className="bg-blue-50">
+              <CardTitle className="text-sm text-slate-700">
+                Grouped by: {config.fields.find(f => f.name === groupBy)?.label || groupBy}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+          {Object.keys(groupedData).map(groupValue => (
+            <Card key={groupValue}>
+              <CardHeader className="bg-slate-100">
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <span>{groupValue}</span>
+                  <span className="text-sm font-normal text-slate-600">
+                    {groupedData[groupValue].length} records
+                  </span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <MasterViewTypes
+                  data={groupedData[groupValue]}
+                  config={config}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  currentView={currentView}
+                  onViewChange={setCurrentView}
+                />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <MasterViewTypes
+          data={sortedData}
+          config={config}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          currentView={currentView}
+          onViewChange={setCurrentView}
+        />
+      )}
 
       {/* Form Dialog */}
       <Dialog open={showForm} onOpenChange={setShowForm}>
