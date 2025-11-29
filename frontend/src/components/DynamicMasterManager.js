@@ -374,17 +374,116 @@ export default function DynamicMasterManager({ config, onBack }) {
         </div>
       </div>
 
-      {/* Search */}
+      {/* Search and Controls */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-center gap-2">
-            <Search className="w-4 h-4 text-slate-400" />
-            <Input
-              placeholder="Search..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-md"
-            />
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1 flex items-center gap-2">
+                <Search className="w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Search across all fields..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => setShowFilterPanel(!showFilterPanel)}
+                className={showFilterPanel ? "bg-blue-50 text-blue-600" : ""}
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filters {Object.keys(filters).filter(k => filters[k]).length > 0 && `(${Object.keys(filters).filter(k => filters[k]).length})`}
+              </Button>
+              <Button variant="outline" onClick={clearFilters}>
+                <X className="w-4 h-4 mr-2" />
+                Clear All
+              </Button>
+            </div>
+
+            {/* Filter Panel */}
+            {showFilterPanel && (
+              <div className="border rounded-lg p-4 bg-slate-50">
+                <h3 className="text-sm font-medium mb-3 flex items-center gap-2">
+                  <Filter className="w-4 h-4" />
+                  Advanced Filters
+                </h3>
+                <div className="grid grid-cols-3 gap-4">
+                  {config.fields.slice(0, 6).map(field => (
+                    <div key={field.id} className="space-y-1">
+                      <Label className="text-xs text-slate-600">{field.label}</Label>
+                      <Input
+                        placeholder={`Filter by ${field.label.toLowerCase()}...`}
+                        value={filters[field.name] || ""}
+                        onChange={(e) => handleFilterChange(field.name, e.target.value)}
+                        className="h-8 text-sm"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Sort and Group Controls */}
+            <div className="flex items-center gap-4 pt-2 border-t">
+              <div className="flex items-center gap-2">
+                <ArrowUpDown className="w-4 h-4 text-slate-400" />
+                <Label className="text-sm text-slate-600">Sort By:</Label>
+                <select
+                  className="flex h-8 rounded-md border border-slate-300 bg-white px-3 text-sm"
+                  value={sortConfig.field || ""}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setSortConfig({ field: e.target.value, direction: 'asc' });
+                    } else {
+                      setSortConfig({ field: null, direction: null });
+                    }
+                  }}
+                >
+                  <option value="">None</option>
+                  {config.fields.map(field => (
+                    <option key={field.id} value={field.name}>{field.label}</option>
+                  ))}
+                </select>
+                {sortConfig.field && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSortConfig({
+                      ...sortConfig,
+                      direction: sortConfig.direction === 'asc' ? 'desc' : 'asc'
+                    })}
+                  >
+                    {sortConfig.direction === 'asc' ? (
+                      <ArrowUp className="w-4 h-4" />
+                    ) : (
+                      <ArrowDown className="w-4 h-4" />
+                    )}
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Group className="w-4 h-4 text-slate-400" />
+                <Label className="text-sm text-slate-600">Group By:</Label>
+                <select
+                  className="flex h-8 rounded-md border border-slate-300 bg-white px-3 text-sm"
+                  value={groupBy || ""}
+                  onChange={(e) => setGroupBy(e.target.value || null)}
+                >
+                  <option value="">None</option>
+                  {config.fields.filter(f => f.type === 'dropdown' || f.type === 'text').map(field => (
+                    <option key={field.id} value={field.name}>{field.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="ml-auto text-sm text-slate-600">
+                {sortedData.length} {sortedData.length === 1 ? 'record' : 'records'}
+                {searchTerm || Object.keys(filters).some(k => filters[k]) ? ` (filtered from ${data.length})` : ''}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
