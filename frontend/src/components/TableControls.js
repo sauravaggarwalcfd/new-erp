@@ -224,7 +224,7 @@ export default function TableControls({ data, columns }) {
           )}
 
           {/* Sort and Group Controls */}
-          <div className="flex items-center gap-4 pt-2 border-t">
+          <div className="flex items-center gap-4 pt-2 border-t flex-wrap">
             <div className="flex items-center gap-2">
               <ArrowUpDown className="w-4 h-4 text-slate-400" />
               <Label className="text-sm text-slate-600">Sort By:</Label>
@@ -268,7 +268,12 @@ export default function TableControls({ data, columns }) {
               <select
                 className="flex h-8 rounded-md border border-slate-300 bg-white px-3 text-sm"
                 value={groupBy || ""}
-                onChange={(e) => setGroupBy(e.target.value || null)}
+                onChange={(e) => {
+                  setGroupBy(e.target.value || null);
+                  if (!e.target.value) {
+                    setSubGroupBy(null); // Clear sub-group if main group is cleared
+                  }
+                }}
               >
                 <option value="">None</option>
                 {columns.filter(c => c.type === 'dropdown' || c.type === 'text').map(column => (
@@ -276,6 +281,24 @@ export default function TableControls({ data, columns }) {
                 ))}
               </select>
             </div>
+
+            {/* Sub-Grouping Control */}
+            {groupBy && (
+              <div className="flex items-center gap-2">
+                <Group className="w-4 h-4 text-slate-400" />
+                <Label className="text-sm text-slate-600">Then By:</Label>
+                <select
+                  className="flex h-8 rounded-md border border-slate-300 bg-white px-3 text-sm"
+                  value={subGroupBy || ""}
+                  onChange={(e) => setSubGroupBy(e.target.value || null)}
+                >
+                  <option value="">None</option>
+                  {subGroupColumns.map(column => (
+                    <option key={column.name} value={column.name}>{column.label}</option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             <div className="ml-auto text-sm text-slate-600">
               {sortedData.length} {sortedData.length === 1 ? 'record' : 'records'}
