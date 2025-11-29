@@ -1047,6 +1047,234 @@ async def delete_dynamic_master_data(config_id: str, data_id: str, current_user:
     except HTTPException:
         raise
     except Exception as e:
+
+# ============================================================================
+# MASTER BUILDER INITIALIZATION - Pre-configured Masters
+# ============================================================================
+
+PREDEFINED_MASTERS = [
+    {
+        "id": "buyer_master",
+        "name": "Buyer/Customer Master",
+        "description": "Manage all buyers and customers",
+        "icon": "👥",
+        "category": "other",
+        "enableExcelUpload": True,
+        "enableImageUpload": False,
+        "fields": [
+            {"id": "1", "name": "name", "label": "Buyer Name", "type": "text", "required": True, "order": 0},
+            {"id": "2", "name": "contact_person", "label": "Contact Person", "type": "text", "required": False, "order": 1},
+            {"id": "3", "name": "email", "label": "Email", "type": "text", "required": False, "order": 2},
+            {"id": "4", "name": "phone", "label": "Phone", "type": "text", "required": False, "order": 3},
+            {"id": "5", "name": "address", "label": "Address", "type": "textarea", "required": False, "order": 4},
+            {"id": "6", "name": "country", "label": "Country", "type": "text", "required": False, "order": 5}
+        ]
+    },
+    {
+        "id": "supplier_master",
+        "name": "Supplier/Vendor Master",
+        "description": "Manage all suppliers and vendors",
+        "icon": "🏢",
+        "category": "other",
+        "enableExcelUpload": True,
+        "enableImageUpload": False,
+        "fields": [
+            {"id": "1", "name": "name", "label": "Supplier Name", "type": "text", "required": True, "order": 0},
+            {"id": "2", "name": "contact_person", "label": "Contact Person", "type": "text", "required": False, "order": 1},
+            {"id": "3", "name": "email", "label": "Email", "type": "text", "required": False, "order": 2},
+            {"id": "4", "name": "phone", "label": "Phone", "type": "text", "required": False, "order": 3},
+            {"id": "5", "name": "address", "label": "Address", "type": "textarea", "required": False, "order": 4},
+            {"id": "6", "name": "material_type", "label": "Material Type", "type": "text", "required": False, "order": 5}
+        ]
+    },
+    {
+        "id": "fabric_master",
+        "name": "Fabric Master",
+        "description": "Manage fabric materials with all specifications",
+        "icon": "🧵",
+        "category": "material",
+        "enableExcelUpload": True,
+        "enableImageUpload": True,
+        "fields": [
+            {"id": "1", "name": "sr_no", "label": "Serial No", "type": "number", "required": False, "order": 0},
+            {"id": "2", "name": "fabric_name", "label": "Fabric Name", "type": "text", "required": True, "order": 1},
+            {"id": "3", "name": "fabric_type", "label": "Fabric Type", "type": "text", "required": False, "order": 2},
+            {"id": "4", "name": "composition", "label": "Composition", "type": "text", "required": False, "order": 3},
+            {"id": "5", "name": "gsm", "label": "GSM", "type": "text", "required": False, "order": 4},
+            {"id": "6", "name": "width", "label": "Width", "type": "text", "required": False, "order": 5},
+            {"id": "7", "name": "color", "label": "Color", "type": "text", "required": False, "order": 6},
+            {"id": "8", "name": "supplier", "label": "Supplier", "type": "text", "required": False, "order": 7},
+            {"id": "9", "name": "cost_per_unit", "label": "Cost per Unit", "type": "decimal", "required": False, "order": 8},
+            {"id": "10", "name": "unit", "label": "Unit", "type": "dropdown", "required": False, "options": ["meter", "kg", "yard"], "order": 9},
+            {"id": "11", "name": "final_item", "label": "Final Item", "type": "text", "required": False, "order": 10}
+        ]
+    },
+    {
+        "id": "color_master",
+        "name": "Color Master",
+        "description": "Manage color codes and specifications",
+        "icon": "🎨",
+        "category": "other",
+        "enableExcelUpload": True,
+        "enableImageUpload": False,
+        "fields": [
+            {"id": "1", "name": "name", "label": "Color Name", "type": "text", "required": True, "order": 0},
+            {"id": "2", "name": "code", "label": "Color Code", "type": "text", "required": False, "order": 1},
+            {"id": "3", "name": "hex_value", "label": "Hex Value", "type": "text", "required": False, "order": 2},
+            {"id": "4", "name": "pantone", "label": "Pantone Code", "type": "text", "required": False, "order": 3}
+        ]
+    },
+    {
+        "id": "size_master",
+        "name": "Size Master",
+        "description": "Manage size specifications",
+        "icon": "📏",
+        "category": "other",
+        "enableExcelUpload": True,
+        "enableImageUpload": False,
+        "fields": [
+            {"id": "1", "name": "name", "label": "Size Name", "type": "text", "required": True, "order": 0},
+            {"id": "2", "name": "category", "label": "Category", "type": "dropdown", "required": False, "options": ["Clothing", "Shoes", "Accessories"], "order": 1},
+            {"id": "3", "name": "measurements", "label": "Measurements", "type": "text", "required": False, "order": 2}
+        ]
+    },
+    {
+        "id": "article_master",
+        "name": "Article/Style Master",
+        "description": "Manage article and style specifications",
+        "icon": "👕",
+        "category": "production",
+        "enableExcelUpload": True,
+        "enableImageUpload": True,
+        "fields": [
+            {"id": "1", "name": "code", "label": "Article Code", "type": "text", "required": True, "order": 0},
+            {"id": "2", "name": "name", "label": "Article Name", "type": "text", "required": True, "order": 1},
+            {"id": "3", "name": "description", "label": "Description", "type": "textarea", "required": False, "order": 2},
+            {"id": "4", "name": "category", "label": "Category", "type": "text", "required": False, "order": 3},
+            {"id": "5", "name": "season", "label": "Season", "type": "dropdown", "required": False, "options": ["Spring", "Summer", "Fall", "Winter"], "order": 4}
+        ]
+    },
+    {
+        "id": "raw_material_master",
+        "name": "Raw Material Master",
+        "description": "Manage raw materials and components",
+        "icon": "📦",
+        "category": "material",
+        "enableExcelUpload": True,
+        "enableImageUpload": False,
+        "fields": [
+            {"id": "1", "name": "name", "label": "Material Name", "type": "text", "required": True, "order": 0},
+            {"id": "2", "name": "type", "label": "Material Type", "type": "dropdown", "required": False, "options": ["Fabric", "Trim", "Accessory", "Chemical"], "order": 1},
+            {"id": "3", "name": "supplier", "label": "Supplier", "type": "text", "required": False, "order": 2},
+            {"id": "4", "name": "unit_price", "label": "Unit Price", "type": "decimal", "required": False, "order": 3},
+            {"id": "5", "name": "unit", "label": "Unit", "type": "text", "required": False, "order": 4}
+        ]
+    }
+]
+
+@api_router.post("/initialize-predefined-masters")
+async def initialize_predefined_masters(current_user: User = Depends(get_current_user)):
+    """Initialize pre-configured masters for existing data types"""
+    try:
+        created_count = 0
+        skipped_count = 0
+        migrated_count = 0
+        
+        for master_config in PREDEFINED_MASTERS:
+            # Check if master already exists
+            existing = await db.master_configurations.find_one({"id": master_config["id"]})
+            
+            if not existing:
+                # Create the master configuration
+                config_doc = {
+                    **master_config,
+                    "created_at": datetime.now(timezone.utc).isoformat(),
+                    "created_by": current_user.username
+                }
+                await db.master_configurations.insert_one(config_doc)
+                created_count += 1
+                
+                # Migrate existing data if any
+                old_collection_map = {
+                    "buyer_master": "buyers",
+                    "supplier_master": "suppliers",
+                    "fabric_master": "fabrics",
+                    "color_master": "colors",
+                    "size_master": "sizes",
+                    "article_master": "articles",
+                    "raw_material_master": "raw_materials"
+                }
+                
+                old_collection = old_collection_map.get(master_config["id"])
+                if old_collection:
+                    # Get data from old collection
+                    old_data = await db[old_collection].find({}, {"_id": 0}).to_list(1000)
+                    
+                    if old_data:
+                        # Migrate to dynamic collection
+                        new_collection = f"dynamic_{master_config['id']}"
+                        for item in old_data:
+                            item["created_at"] = datetime.now(timezone.utc).isoformat()
+                            item["created_by"] = "system_migration"
+                            if "id" not in item:
+                                item["id"] = str(uuid.uuid4())
+                        
+                        await db[new_collection].insert_many(old_data)
+                        migrated_count += len(old_data)
+            else:
+                skipped_count += 1
+        
+        return {
+            "message": "Pre-configured masters initialized",
+            "created": created_count,
+            "skipped": skipped_count,
+            "data_migrated": migrated_count
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error initializing masters: {str(e)}")
+
+@api_router.get("/predefined-masters/status")
+async def get_predefined_masters_status(current_user: User = Depends(get_current_user)):
+    """Check which predefined masters are already initialized"""
+    try:
+        status = []
+        for master in PREDEFINED_MASTERS:
+            existing = await db.master_configurations.find_one({"id": master["id"]})
+            
+            # Count data in both old and new collections
+            old_collection_map = {
+                "buyer_master": "buyers",
+                "supplier_master": "suppliers", 
+                "fabric_master": "fabrics",
+                "color_master": "colors",
+                "size_master": "sizes",
+                "article_master": "articles",
+                "raw_material_master": "raw_materials"
+            }
+            
+            old_collection = old_collection_map.get(master["id"])
+            old_count = 0
+            new_count = 0
+            
+            if old_collection:
+                old_count = await db[old_collection].count_documents({})
+            
+            if existing:
+                new_collection = f"dynamic_{master['id']}"
+                new_count = await db[new_collection].count_documents({})
+            
+            status.append({
+                "id": master["id"],
+                "name": master["name"],
+                "initialized": existing is not None,
+                "old_data_count": old_count,
+                "new_data_count": new_count
+            })
+        
+        return status
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error checking status: {str(e)}")
+
         raise HTTPException(status_code=500, detail=f"Error deleting master data: {str(e)}")
 
 # Bulk Excel Upload for Dynamic Masters
