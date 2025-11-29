@@ -124,6 +124,16 @@ function App() {
             }
           />
           <Route
+            path="/master-builder"
+            element={
+              user ? (
+                <MasterBuilder user={user} onLogout={handleLogout} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
             path="/bom-options"
             element={<BOMLayoutOptions />}
           />
