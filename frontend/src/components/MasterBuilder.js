@@ -34,7 +34,35 @@ export default function MasterBuilder({ user, onLogout }) {
 
   useEffect(() => {
     fetchMasterConfigs();
+    checkPredefinedMastersStatus();
   }, []);
+
+  const checkPredefinedMastersStatus = async () => {
+    try {
+      const response = await axios.get(`${API}/predefined-masters/status`);
+      const uninitializedCount = response.data.filter(m => !m.initialized).length;
+      
+      if (uninitializedCount > 0) {
+        // Show notification that predefined masters can be initialized
+        console.log(`${uninitializedCount} predefined masters available for initialization`);
+      }
+    } catch (error) {
+      console.error("Error checking predefined masters:", error);
+    }
+  };
+
+  const initializePredefinedMasters = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post(`${API}/initialize-predefined-masters`);
+      toast.success(`Initialized ${response.data.created} masters, migrated ${response.data.data_migrated} records`);
+      fetchMasterConfigs();
+    } catch (error) {
+      toast.error("Error initializing predefined masters");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchMasterConfigs = async () => {
     setLoading(true);
