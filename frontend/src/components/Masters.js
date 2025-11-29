@@ -16,13 +16,12 @@ import TableControls from "./TableControls";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-// Generic Master Component with View Types and Controls
+// Generic Master Component with Controls
 function MasterTable({ title, description, columns, data, onAdd, onEdit, onDelete, renderForm, loading }) {
   const [open, setOpen] = useState(false);
   const [editItem, setEditItem] = useState(null);
-  const [currentView, setCurrentView] = useState('grid');
 
-  // Convert columns to config format for MasterViewTypes and TableControls
+  // Convert columns to config format for TableControls
   const config = {
     name: title,
     fields: columns.map((col, idx) => ({
@@ -41,13 +40,110 @@ function MasterTable({ title, description, columns, data, onAdd, onEdit, onDelet
     isNestedGrouping,
     groupBy,
     subGroupBy,
-    sortConfig,
-    handleSort,
     renderControls
   } = TableControls({
     data: data || [],
     columns: config.fields
   });
+
+  // Render grouped data
+  const renderGroupedData = () => {
+    if (isNestedGrouping) {
+      // Two-level grouping
+      return (
+        <div className="space-y-6">
+          {Object.keys(groupedData).map(mainGroup => (
+            <Card key={mainGroup}>
+              <CardHeader className="bg-blue-50">
+                <CardTitle className="text-lg">
+                  {groupBy}: {mainGroup} ({Object.values(groupedData[mainGroup]).reduce((sum, items) => sum + items.length, 0)} items)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4">
+                {Object.keys(groupedData[mainGroup]).map(subGroup => (
+                  <div key={subGroup} className="border rounded-lg p-4 bg-slate-50">
+                    <h4 className="font-medium text-slate-700 mb-3">
+                      {subGroupBy}: {subGroup} ({groupedData[mainGroup][subGroup].length} items)
+                    </h4>
+                    {renderTable(groupedData[mainGroup][subGroup])}
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
+    } else if (isGrouped) {
+      // Single-level grouping
+      return (
+        <div className="space-y-4">
+          {Object.keys(groupedData).map(group => (
+            <Card key={group}>
+              <CardHeader className="bg-slate-50">
+                <CardTitle className="text-lg">
+                  {groupBy}: {group} ({groupedData[group].length} items)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                {renderTable(groupedData[group])}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
+  // Render table with custom column rendering support
+  const renderTable = (tableData) => (
+    <div className="border rounded-lg overflow-hidden">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {columns.map((col) => (
+              <TableHead key={col.key}>{col.label}</TableHead>
+            ))}
+            <TableHead className="text-right">Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tableData.map((item, index) => (
+            <TableRow key={item.id}>
+              {columns.map((col) => (
+                <TableCell key={col.key}>
+                  {col.render ? col.render(item, index) : item[col.key]}
+                </TableCell>
+              ))}
+              <TableCell className="text-right space-x-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setEditItem(item);
+                    setOpen(true);
+                  }}
+                  data-testid={`edit-${title.toLowerCase()}-${item.id}`}
+                >
+                  <Pencil className="w-4 h-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(item.id)}
+                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                  data-testid={`delete-${title.toLowerCase()}-${item.id}`}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
 
   return (
     <div className="space-y-6">
@@ -102,15 +198,14 @@ function MasterTable({ title, description, columns, data, onAdd, onEdit, onDelet
             <div className="text-center text-slate-500">No {title.toLowerCase()} found</div>
           </CardContent>
         </Card>
+      ) : isGrouped ? (
+        renderGroupedData()
       ) : (
-        <MasterViewTypes
-          data={processedData}
-          config={config}
-          onEdit={onEdit}
-          onDelete={onDelete}
-          currentView={currentView}
-          onViewChange={setCurrentView}
-        />
+        <Card>
+          <CardContent className="p-0">
+            {renderTable(processedData)}
+          </CardContent>
+        </Card>
       )}
     </div>
   );
