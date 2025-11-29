@@ -1,55 +1,64 @@
-import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import '@/App.css';
-import GarmentForge from './pages/GarmentForge';
-import Dashboard from './pages/Dashboard';
-import DashboardModern from './pages/DashboardModern';
-import DashboardMinimal from './pages/DashboardMinimal';
-import DashboardDark from './pages/DashboardDark';
-import DashboardNotion from './pages/DashboardNotion';
-import DashboardLinear from './pages/DashboardLinear';
-import DashboardStripe from './pages/DashboardStripe';
-import DashboardApple from './pages/DashboardApple';
-import Orders from './pages/Orders';
-import Production from './pages/Production';
-import Inventory from './pages/Inventory';
-import Quality from './pages/Quality';
-import Employees from './pages/Employees';
-import Analytics from './pages/Analytics';
-import Tasks from './pages/Tasks';
-import TasksEnhanced from './pages/TasksEnhanced';
+import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Login from '@/components/Login';
+import Dashboard from '@/components/Dashboard';
+import Masters from '@/components/Masters';
+import BOMManagement from '@/components/BOMManagement';
+import MRPManagement from '@/components/MRPManagement';
+import MasterBuilder from '@/components/MasterBuilder';
+import Tasks from './pages/TasksEnhanced';
 import Messages from './pages/Messages';
 import Groups from './pages/Groups';
 import Notifications from './pages/Notifications';
-import Suppliers from './pages/Suppliers';
+import Analytics from './pages/Analytics';
+import { Toaster } from '@/components/ui/sonner';
 
-const Layout = ({ children }) => {
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+// Set axios defaults
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+const UnifiedLayout = ({ children, user, onLogout }) => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('erp');
-  
-  const isActive = (path) => {
-    return location.pathname === path ? 'bg-blue-700' : '';
-  };
 
-  // Determine which tab should be active based on current route
-  React.useEffect(() => {
+  useEffect(() => {
     const tasksRoutes = ['/tasks', '/messages', '/groups', '/notifications'];
-    const erpRoutes = ['/orders', '/production', '/inventory', '/suppliers', '/quality', '/employees'];
-    
     if (tasksRoutes.some(route => location.pathname.includes(route))) {
       setActiveTab('tasks');
-    } else if (erpRoutes.some(route => location.pathname.includes(route))) {
+    } else {
       setActiveTab('erp');
     }
   }, [location.pathname]);
 
+  const isActive = (path) => {
+    return location.pathname === path ? 'bg-blue-700' : '';
+  };
+
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-blue-900 text-white flex flex-col">
+      <div className="w-64 bg-blue-900 text-white flex flex-col shadow-xl">
         <div className="p-6 border-b border-blue-800">
-          <h1 className="text-2xl font-bold">Factory Manager</h1>
-          <p className="text-blue-300 text-sm mt-1">Unified Management System</p>
+          <div className="flex items-center gap-3">
+            <div className="text-3xl">🏭</div>
+            <div>
+              <h1 className="text-xl font-bold">GarmentERP</h1>
+              <p className="text-xs text-blue-300">Manufacturing System</p>
+            </div>
+          </div>
         </div>
 
         {/* Tab Selector */}
@@ -57,9 +66,9 @@ const Layout = ({ children }) => {
           <div className="flex gap-2">
             <button
               onClick={() => setActiveTab('erp')}
-              className={`flex-1 py-2 px-3 rounded-lg font-semibold transition ${
-                activeTab === 'erp' 
-                  ? 'bg-blue-600 text-white' 
+              className={`flex-1 py-2 px-3 rounded-lg font-semibold text-sm transition ${
+                activeTab === 'erp'
+                  ? 'bg-blue-600 text-white shadow-lg'
                   : 'bg-blue-800 text-blue-300 hover:bg-blue-700'
               }`}
               data-testid="erp-tab-button"
@@ -68,9 +77,9 @@ const Layout = ({ children }) => {
             </button>
             <button
               onClick={() => setActiveTab('tasks')}
-              className={`flex-1 py-2 px-3 rounded-lg font-semibold transition ${
-                activeTab === 'tasks' 
-                  ? 'bg-blue-600 text-white' 
+              className={`flex-1 py-2 px-3 rounded-lg font-semibold text-sm transition ${
+                activeTab === 'tasks'
+                  ? 'bg-green-600 text-white shadow-lg'
                   : 'bg-blue-800 text-blue-300 hover:bg-blue-700'
               }`}
               data-testid="tasks-tab-button"
@@ -79,56 +88,53 @@ const Layout = ({ children }) => {
             </button>
           </div>
         </div>
-        
-        <nav className="flex-1 overflow-y-auto py-4">
-          {/* Shared Navigation */}
-          <div className="mb-4">
-            <div className="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider">
-              General
-            </div>
-            <Link to="/" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/')}`} data-testid="garment-forge-link">
-              <span className="mr-3">🏭</span>
-              <span>Garment Forge</span>
-            </Link>
-            <Link to="/dashboard" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/dashboard')}`} data-testid="dashboard-link">
-              <span className="mr-3">📊</span>
-              <span>Dashboard</span>
-            </Link>
-            <Link to="/analytics" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/analytics')}`} data-testid="analytics-link">
-              <span className="mr-3">📈</span>
-              <span>Analytics</span>
-            </Link>
-          </div>
 
+        <nav className="flex-1 overflow-y-auto py-4">
           {/* ERP Section */}
           {activeTab === 'erp' && (
             <div data-testid="erp-section">
               <div className="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider">
                 ERP Management
               </div>
-              <Link to="/orders" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/orders')}`} data-testid="orders-link">
-                <span className="mr-3">📦</span>
-                <span>Orders</span>
+              <Link
+                to="/"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/')}`}
+                data-testid="dashboard-link"
+              >
+                <span className="mr-3">📊</span>
+                <span>Dashboard</span>
               </Link>
-              <Link to="/production" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/production')}`} data-testid="production-link">
-                <span className="mr-3">⚙️</span>
-                <span>Production</span>
-              </Link>
-              <Link to="/inventory" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/inventory')}`} data-testid="inventory-link">
+              <Link
+                to="/masters"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/masters')}`}
+                data-testid="masters-link"
+              >
                 <span className="mr-3">📋</span>
-                <span>Inventory</span>
+                <span>Masters</span>
               </Link>
-              <Link to="/suppliers" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/suppliers')}`} data-testid="suppliers-link">
-                <span className="mr-3">🏭</span>
-                <span>Suppliers</span>
+              <Link
+                to="/master-builder"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/master-builder')}`}
+                data-testid="master-builder-link"
+              >
+                <span className="mr-3">🔧</span>
+                <span>Master Builder</span>
               </Link>
-              <Link to="/quality" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/quality')}`} data-testid="quality-link">
-                <span className="mr-3">✅</span>
-                <span>Quality Control</span>
+              <Link
+                to="/boms"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/boms')}`}
+                data-testid="bom-link"
+              >
+                <span className="mr-3">📦</span>
+                <span>BOM Management</span>
               </Link>
-              <Link to="/employees" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/employees')}`} data-testid="employees-link">
-                <span className="mr-3">👥</span>
-                <span>Employees</span>
+              <Link
+                to="/mrp"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/mrp')}`}
+                data-testid="mrp-link"
+              >
+                <span className="mr-3">📈</span>
+                <span>MRP Management</span>
               </Link>
             </div>
           )}
@@ -139,79 +145,267 @@ const Layout = ({ children }) => {
               <div className="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider">
                 Task Management
               </div>
-              <Link to="/tasks" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/tasks')}`} data-testid="tasks-link">
+              <Link
+                to="/tasks"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/tasks')}`}
+                data-testid="tasks-link"
+              >
                 <span className="mr-3">📝</span>
                 <span>Tasks</span>
               </Link>
-              <Link to="/messages" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/messages')}`} data-testid="messages-link">
+              <Link
+                to="/messages"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/messages')}`}
+                data-testid="messages-link"
+              >
                 <span className="mr-3">💬</span>
                 <span>Messages</span>
               </Link>
-              <Link to="/groups" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/groups')}`} data-testid="groups-link">
+              <Link
+                to="/groups"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/groups')}`}
+                data-testid="groups-link"
+              >
                 <span className="mr-3">👥</span>
                 <span>Groups</span>
               </Link>
-              <Link to="/notifications" className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/notifications')}`} data-testid="notifications-link">
+              <Link
+                to="/notifications"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/notifications')}`}
+                data-testid="notifications-link"
+              >
                 <span className="mr-3">🔔</span>
                 <span>Notifications</span>
+              </Link>
+              <Link
+                to="/analytics"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/analytics')}`}
+                data-testid="analytics-link"
+              >
+                <span className="mr-3">📊</span>
+                <span>Analytics</span>
               </Link>
             </div>
           )}
         </nav>
-        
-        <div className="p-4 border-t border-blue-800 text-sm text-blue-300">
-          <div className="mb-2">
-            <span className="font-semibold">Active: </span>
-            <span className={`px-2 py-1 rounded text-xs ${
-              activeTab === 'erp' ? 'bg-blue-600' : 'bg-green-600'
-            }`}>
+
+        {/* Footer */}
+        <div className="p-4 border-t border-blue-800">
+          <div className="mb-3">
+            <div className="text-xs text-blue-400 mb-1">Logged in as</div>
+            <div className="font-semibold text-sm">{user?.username || 'User'}</div>
+            <div className="text-xs text-blue-300">{user?.email}</div>
+          </div>
+          <div className="mb-3">
+            <span className="text-xs font-semibold">Active: </span>
+            <span
+              className={`px-2 py-1 rounded text-xs font-medium ${
+                activeTab === 'erp' ? 'bg-blue-600' : 'bg-green-600'
+              }`}
+            >
               {activeTab === 'erp' ? '🏭 ERP Mode' : '📝 Tasks Mode'}
             </span>
           </div>
-          <p>© 2025 Factory Manager</p>
+          <button
+            onClick={onLogout}
+            className="w-full py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition"
+            data-testid="logout-button"
+          >
+            Logout
+          </button>
+          <p className="text-xs text-blue-400 mt-3 text-center">© 2025 GarmentERP</p>
         </div>
       </div>
-      
+
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          {children}
-        </div>
+        {children}
       </div>
     </div>
   );
 };
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`${API}/auth/me`);
+      setUser(response.data);
+    } catch (error) {
+      localStorage.removeItem('token');
+    }
+    setLoading(false);
+  };
+
+  const handleLogin = (userData, token) => {
+    localStorage.setItem('token', token);
+    setUser(userData);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="text-center">
+          <div className="text-6xl mb-4">🏭</div>
+          <div className="text-xl text-slate-600">Loading GarmentERP...</div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
+      <Toaster position="top-right" richColors />
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<GarmentForge />} />
-            <Route path="/dashboard" element={<DashboardApple />} />
-            <Route path="/modern" element={<DashboardModern />} />
-            <Route path="/minimal" element={<DashboardMinimal />} />
-            <Route path="/dark" element={<DashboardDark />} />
-            <Route path="/notion" element={<DashboardNotion />} />
-            <Route path="/linear" element={<DashboardLinear />} />
-            <Route path="/stripe" element={<DashboardStripe />} />
-            <Route path="/apple" element={<DashboardApple />} />
-            <Route path="/original" element={<Dashboard />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/production" element={<Production />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/suppliers" element={<Suppliers />} />
-            <Route path="/quality" element={<Quality />} />
-            <Route path="/employees" element={<Employees />} />
-            <Route path="/tasks" element={<TasksEnhanced />} />
-            <Route path="/tasks-old" element={<Tasks />} />
-            <Route path="/messages" element={<Messages />} />
-            <Route path="/groups" element={<Groups />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/analytics" element={<Analytics />} />
-          </Routes>
-        </Layout>
+        <Routes>
+          <Route
+            path="/login"
+            element={
+              !user ? (
+                <Login onLogin={handleLogin} />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+          <Route
+            path="/"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <Dashboard user={user} onLogout={handleLogout} />
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/masters"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <Masters user={user} onLogout={handleLogout} />
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/boms"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <BOMManagement user={user} onLogout={handleLogout} />
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/mrp"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <MRPManagement user={user} onLogout={handleLogout} />
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/master-builder"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <MasterBuilder user={user} onLogout={handleLogout} />
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/tasks"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <div className="p-8"><Tasks /></div>
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <div className="p-8"><Messages /></div>
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/groups"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <div className="p-8"><Groups /></div>
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <div className="p-8"><Notifications /></div>
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/analytics"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <div className="p-8"><Analytics /></div>
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+        </Routes>
       </BrowserRouter>
     </div>
   );
