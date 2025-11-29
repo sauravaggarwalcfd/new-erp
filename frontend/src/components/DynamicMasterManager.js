@@ -503,70 +503,147 @@ export default function DynamicMasterManager({ config, onBack }) {
                 : "No records yet. Click 'Add New' to create one."}
             </div>
           ) : groupBy ? (
-            /* Grouped View */
+            /* Grouped View with Sub-Grouping Support */
             <div className="space-y-6">
-              {Object.keys(groupedData).map(groupValue => (
-                <div key={groupValue} className="border rounded-lg overflow-hidden">
-                  <div className="bg-slate-100 px-4 py-2 font-medium text-slate-700 flex items-center gap-2">
-                    <Group className="w-4 h-4" />
-                    {groupValue} ({groupedData[groupValue].length})
-                  </div>
-                  <div className="overflow-x-auto">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
-                          <TableHead className="w-12">#</TableHead>
-                          {config.fields.slice(0, 6).map(field => (
-                            <TableHead key={field.id}>
-                              <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleSort(field.name)}>
-                                {field.label}
-                                {sortConfig.field === field.name && (
-                                  sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />
-                                )}
-                              </div>
-                            </TableHead>
-                          ))}
-                          <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
-                        {groupedData[groupValue].map((item, index) => (
-                          <TableRow key={item.id}>
-                            <TableCell className="font-medium">{index + 1}</TableCell>
-                            {config.fields.slice(0, 6).map(field => (
-                              <TableCell key={field.id}>
-                                {field.type === "checkbox" 
-                                  ? (item[field.name] ? "✓" : "✗")
-                                  : Array.isArray(item[field.name])
-                                  ? item[field.name].join(", ")
-                                  : item[field.name] || "-"}
-                              </TableCell>
-                            ))}
-                            <TableCell className="text-right space-x-2">
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEdit(item)}
-                                className="text-blue-600"
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDelete(item.id)}
-                                className="text-red-600"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </TableCell>
-                          </TableRow>
+              {Object.keys(groupedData).map(mainGroupValue => {
+                const mainGroupData = groupedData[mainGroupValue];
+                const isNested = typeof mainGroupData === 'object' && !Array.isArray(mainGroupData);
+                
+                return (
+                  <div key={mainGroupValue} className="border-2 rounded-lg overflow-hidden border-slate-300">
+                    {/* Main Group Header */}
+                    <div className="bg-slate-200 px-4 py-3 font-bold text-slate-800 flex items-center gap-2 text-lg">
+                      <Group className="w-5 h-5" />
+                      {mainGroupValue}
+                      {!isNested && ` (${mainGroupData.length})`}
+                    </div>
+                    
+                    {isNested ? (
+                      /* Sub-Grouped View */
+                      <div className="p-2 space-y-3 bg-slate-50">
+                        {Object.keys(mainGroupData).map(subGroupValue => (
+                          <div key={subGroupValue} className="border rounded-lg overflow-hidden bg-white">
+                            <div className="bg-slate-100 px-4 py-2 font-medium text-slate-700 flex items-center gap-2">
+                              <Group className="w-4 h-4 ml-4" />
+                              {subGroupValue} ({mainGroupData[subGroupValue].length})
+                            </div>
+                            <div className="overflow-x-auto">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead className="w-12">#</TableHead>
+                                    {config.fields.slice(0, 6).map(field => (
+                                      <TableHead key={field.id}>
+                                        <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleSort(field.name)}>
+                                          {field.label}
+                                          {sortConfig.field === field.name && (
+                                            sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />
+                                          )}
+                                        </div>
+                                      </TableHead>
+                                    ))}
+                                    <TableHead className="text-right">Actions</TableHead>
+                                  </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                  {mainGroupData[subGroupValue].map((item, index) => (
+                                    <TableRow key={item.id}>
+                                      <TableCell className="font-medium">{index + 1}</TableCell>
+                                      {config.fields.slice(0, 6).map(field => (
+                                        <TableCell key={field.id}>
+                                          {field.type === "checkbox" 
+                                            ? (item[field.name] ? "✓" : "✗")
+                                            : Array.isArray(item[field.name])
+                                            ? item[field.name].join(", ")
+                                            : item[field.name] || "-"}
+                                        </TableCell>
+                                      ))}
+                                      <TableCell className="text-right space-x-2">
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => handleEdit(item)}
+                                          className="text-blue-600"
+                                        >
+                                          <Edit className="w-4 h-4" />
+                                        </Button>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => handleDelete(item.id)}
+                                          className="text-red-600"
+                                        >
+                                          <Trash2 className="w-4 h-4" />
+                                        </Button>
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
+                          </div>
                         ))}
-                      </TableBody>
-                    </Table>
+                      </div>
+                    ) : (
+                      /* Single Level Group */
+                      <div className="overflow-x-auto">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="w-12">#</TableHead>
+                              {config.fields.slice(0, 6).map(field => (
+                                <TableHead key={field.id}>
+                                  <div className="flex items-center gap-2 cursor-pointer" onClick={() => handleSort(field.name)}>
+                                    {field.label}
+                                    {sortConfig.field === field.name && (
+                                      sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />
+                                    )}
+                                  </div>
+                                </TableHead>
+                              ))}
+                              <TableHead className="text-right">Actions</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {mainGroupData.map((item, index) => (
+                              <TableRow key={item.id}>
+                                <TableCell className="font-medium">{index + 1}</TableCell>
+                                {config.fields.slice(0, 6).map(field => (
+                                  <TableCell key={field.id}>
+                                    {field.type === "checkbox" 
+                                      ? (item[field.name] ? "✓" : "✗")
+                                      : Array.isArray(item[field.name])
+                                      ? item[field.name].join(", ")
+                                      : item[field.name] || "-"}
+                                  </TableCell>
+                                ))}
+                                <TableCell className="text-right space-x-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleEdit(item)}
+                                    className="text-blue-600"
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDelete(item.id)}
+                                    className="text-red-600"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             /* Normal View */
