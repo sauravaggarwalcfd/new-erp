@@ -708,23 +708,25 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                     </TableHeader>
                     <TableBody>
                       {table.items.map((item, rowIndex) => (
-                        <TableRow key={rowIndex}>
+                        <TableRow key={rowIndex} className="hover:bg-slate-50">
                           {config.trimsTableFields.map(field => (
-                            <TableCell key={field.name}>
-                              {renderFormField(
-                                field,
-                                item[field.name] || '',
-                                (value) => updateTrimsItem(table.id, rowIndex, field.name, value)
-                              )}
+                            <TableCell key={field.name} className="px-2 py-2">
+                              <div style={{ minWidth: field.width || '150px' }}>
+                                {renderFormField(
+                                  field,
+                                  item[field.name] || '',
+                                  (value) => updateTrimsItem(table.id, rowIndex, field.name, value)
+                                )}
+                              </div>
                             </TableCell>
                           ))}
                           {!isReadOnly && (
-                            <TableCell className="text-center">
+                            <TableCell className="text-center px-2 py-2">
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 onClick={() => deleteTrimsRow(table.id, rowIndex)}
-                                className="text-red-600"
+                                className="text-red-600 h-8 w-8 p-0"
                                 disabled={table.items.length === 1}
                               >
                                 <Trash2 className="w-4 h-4" />
