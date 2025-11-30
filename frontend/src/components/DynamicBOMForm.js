@@ -1,0 +1,548 @@
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { toast } from 'sonner';
+import { Plus, Trash2, Save, Copy, ArrowLeft } from 'lucide-react';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
+export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', initialData = null }) {
+  const [config, setConfig] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [headerData, setHeaderData] = useState({});
+  const [fabricTables, setFabricTables] = useState([{ id: 1, name: 'BOM Table 1', items: [] }]);
+  const [trimsTables, setTrimsTables] = useState([{ id: 1, name: 'Trims Table 1', items: [] }]);
+  const [masterData, setMasterData] = useState({});
+  const isReadOnly = mode === 'view';
+
+  useEffect(() => {
+    loadConfig();
+    loadMasterData();
+  }, []);
+
+  const loadConfig = async () => {
+    try {
+      const response = await axios.get(`${API}/bom-form-config`);
+      setConfig(response.data);
+      initializeFormData(response.data);
+    } catch (error) {
+      toast.error('Error loading form configuration');
+      // Use default config if not found
+      const defaultConfig = getDefaultConfig();
+      setConfig(defaultConfig);
+      initializeFormData(defaultConfig);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getDefaultConfig = () => ({
+    headerFields: [
+      { name: 'date', label: 'Date', type: 'date', required: true },
+      { name: 'styleNumber', label: 'Style Number', type: 'text', required: true }
+    ],
+    fabricTableFields: [
+      { name: 'srNo', label: 'SR NO', type: 'number', required: true },
+      { name: 'comboName', label: 'COMBO NAME', type: 'text', required: true }
+    ],
+    trimsTableFields: [
+      { name: 'srNo', label: 'SR NO', type: 'number', required: true },
+      { name: 'itemName', label: 'ITEM NAME', type: 'text', required: true }
+    ]
+  });
+
+  const initializeFormData = (cfg) => {
+    // Initialize header with default values
+    const initialHeader = {};
+    cfg.headerFields.forEach(field => {
+      initialHeader[field.name] = field.defaultValue || '';
+    });
+    setHeaderData(initialHeader);
+
+    // Initialize first row for fabric table
+    const fabricRow = {};
+    cfg.fabricTableFields.forEach(field => {
+      fabricRow[field.name] = field.defaultValue || '';
+    });
+    fabricRow.srNo = 1;
+    setFabricTables([{ id: 1, name: 'BOM Table 1', items: [fabricRow] }]);
+
+    // Initialize first row for trims table
+    const trimsRow = {};
+    cfg.trimsTableFields.forEach(field => {
+      trimsRow[field.name] = field.defaultValue || '';
+    });
+    trimsRow.srNo = 1;
+    setTrimsTables([{ id: 1, name: 'Trims Table 1', items: [trimsRow] }]);
+  };
+
+  const loadMasterData = async () => {
+    try {
+      const masterSources = [
+        'buyers',
+        'suppliers',
+        'colors',
+        'articles',
+        'sizes',
+        'raw-materials'
+      ];
+
+      const promises = masterSources.map(source =>
+        axios.get(`${API}/${source}`).catch(() => ({ data: [] }))
+      );
+
+      // Load fabric master with dynamic endpoint
+      promises.push(
+        axios.get(`${API}/dynamic-masters/fabric_master_excel/data`).catch(() => ({ data: [] }))
+      );
+
+      const results = await Promise.all(promises);
+
+      const data = {
+        buyers: results[0].data,
+        suppliers: results[1].data,
+        colors: results[2].data,
+        articles: results[3].data,
+        sizes: results[4].data,
+        'raw-materials': results[5].data,
+        fabric_master_excel: results[6].data
+      };
+
+      setMasterData(data);
+    } catch (error) {
+      console.error('Error loading master data:', error);
+    }
+  };
+
+  const handleHeaderChange = (fieldName, value) => {
+    setHeaderData({ ...headerData, [fieldName]: value });
+  };
+
+  const addFabricRow = (tableId) => {
+    const table = fabricTables.find(t => t.id === tableId);
+    const newRow = {};
+    config.fabricTableFields.forEach(field => {
+      newRow[field.name] = field.defaultValue || '';
+    });
+    newRow.srNo = table.items.length + 1;
+
+    const updatedTables = fabricTables.map(t =>
+      t.id === tableId ? { ...t, items: [...t.items, newRow] } : t
+    );
+    setFabricTables(updatedTables);
+  };
+
+  const addTrimsRow = (tableId) => {
+    const table = trimsTables.find(t => t.id === tableId);
+    const newRow = {};
+    config.trimsTableFields.forEach(field => {
+      newRow[field.name] = field.defaultValue || '';
+    });
+    newRow.srNo = table.items.length + 1;
+
+    const updatedTables = trimsTables.map(t =>
+      t.id === tableId ? { ...t, items: [...t.items, newRow] } : t
+    );
+    setTrimsTables(updatedTables);
+  };
+
+  const updateFabricItem = (tableId, rowIndex, fieldName, value) => {
+    const updatedTables = fabricTables.map(table => {
+      if (table.id === tableId) {
+        const updatedItems = table.items.map((item, idx) => {
+          if (idx === rowIndex) {
+            const updatedItem = { ...item, [fieldName]: value };
+            // Handle calculated fields
+            const field = config.fabricTableFields.find(f => f.name === fieldName);
+            if (field && field.type === 'calculated') {
+              updatedItem[fieldName] = evaluateCalculation(field.calculation, updatedItem);
+            }
+            return updatedItem;
+          }
+          return item;
+        });
+        return { ...table, items: updatedItems };
+      }
+      return table;
+    });
+    setFabricTables(updatedTables);
+  };
+
+  const updateTrimsItem = (tableId, rowIndex, fieldName, value) => {
+    const updatedTables = trimsTables.map(table => {
+      if (table.id === tableId) {
+        const updatedItems = table.items.map((item, idx) => {
+          if (idx === rowIndex) {
+            const updatedItem = { ...item, [fieldName]: value };
+            // Handle calculated fields
+            const field = config.trimsTableFields.find(f => f.name === fieldName);
+            if (field && field.type === 'calculated') {
+              updatedItem[fieldName] = evaluateCalculation(field.calculation, updatedItem);
+            }
+            return updatedItem;
+          }
+          return item;
+        });
+        return { ...table, items: updatedItems };
+      }
+      return table;
+    });
+    setTrimsTables(updatedTables);
+  };
+
+  const evaluateCalculation = (formula, item) => {
+    try {
+      // Replace field names with values
+      let expression = formula;
+      Object.keys(item).forEach(key => {
+        const value = parseFloat(item[key]) || 0;
+        expression = expression.replace(new RegExp(key, 'g'), value.toString());
+      });
+      // Evaluate the expression
+      return eval(expression) || 0;
+    } catch (error) {
+      return 0;
+    }
+  };
+
+  const deleteFabricRow = (tableId, rowIndex) => {
+    const updatedTables = fabricTables.map(table => {
+      if (table.id === tableId) {
+        const updatedItems = table.items.filter((_, idx) => idx !== rowIndex);
+        // Renumber rows
+        updatedItems.forEach((item, idx) => item.srNo = idx + 1);
+        return { ...table, items: updatedItems };
+      }
+      return table;
+    });
+    setFabricTables(updatedTables);
+  };
+
+  const deleteTrimsRow = (tableId, rowIndex) => {
+    const updatedTables = trimsTables.map(table => {
+      if (table.id === tableId) {
+        const updatedItems = table.items.filter((_, idx) => idx !== rowIndex);
+        // Renumber rows
+        updatedItems.forEach((item, idx) => item.srNo = idx + 1);
+        return { ...table, items: updatedItems };
+      }
+      return table;
+    });
+    setTrimsTables(updatedTables);
+  };
+
+  const handleSave = async () => {
+    // Validate required header fields
+    const missingFields = config.headerFields
+      .filter(f => f.required && !headerData[f.name])
+      .map(f => f.label);
+
+    if (missingFields.length > 0) {
+      toast.error(`Please fill required fields: ${missingFields.join(', ')}`);
+      return;
+    }
+
+    const bomData = {
+      header: headerData,
+      fabricTables: fabricTables,
+      trimsTables: trimsTables,
+      config: config
+    };
+
+    onSave(bomData);
+  };
+
+  const renderFormField = (field, value, onChange) => {
+    switch (field.type) {
+      case 'date':
+        return (
+          <Input
+            type="date"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={isReadOnly}
+          />
+        );
+
+      case 'number':
+        return (
+          <Input
+            type="number"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            disabled={isReadOnly}
+          />
+        );
+
+      case 'textarea':
+        return (
+          <textarea
+            className="flex w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            rows={3}
+            disabled={isReadOnly}
+          />
+        );
+
+      case 'dropdown':
+        return (
+          <select
+            className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={isReadOnly}
+          >
+            <option value="">Select...</option>
+            <option value="kg">Kg</option>
+            <option value="meter">Meter</option>
+            <option value="pcs">Pcs</option>
+          </select>
+        );
+
+      case 'master-dropdown':
+        const masterOptions = masterData[field.masterSource] || [];
+        return (
+          <select
+            className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            disabled={isReadOnly}
+          >
+            <option value="">Select {field.label}</option>
+            {masterOptions.map((option, idx) => (
+              <option key={option.id || idx} value={option.id || option[field.masterDisplayField]}>
+                {option[field.masterDisplayField] || option.name || 'Unknown'}
+              </option>
+            ))}
+          </select>
+        );
+
+      case 'calculated':
+        return (
+          <Input
+            type="number"
+            value={value}
+            disabled
+            className="bg-slate-100"
+          />
+        );
+
+      case 'checkbox':
+        return (
+          <input
+            type="checkbox"
+            checked={value}
+            onChange={(e) => onChange(e.target.checked)}
+            disabled={isReadOnly}
+            className="w-5 h-5"
+          />
+        );
+
+      default:
+        return (
+          <Input
+            type="text"
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            placeholder={field.placeholder}
+            disabled={isReadOnly}
+          />
+        );
+    }
+  };
+
+  if (loading || !config) {
+    return <div className="flex items-center justify-center h-64">Loading form...</div>;
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <Button variant="ghost" onClick={onCancel}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back
+        </Button>
+        {!isReadOnly && (
+          <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+            <Save className="w-4 h-4 mr-2" />
+            Save BOM
+          </Button>
+        )}
+      </div>
+
+      {/* Header Section */}
+      <Card>
+        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
+          <CardTitle className="text-2xl">DYEING BOM SHEET</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid grid-cols-4 gap-4">
+            {config.headerFields.map(field => (
+              <div key={field.name} className="space-y-2">
+                <Label>
+                  {field.label}
+                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                </Label>
+                {renderFormField(
+                  field,
+                  headerData[field.name] || '',
+                  (value) => handleHeaderChange(field.name, value)
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Tabs */}
+      <Tabs defaultValue="fabric" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 h-14 bg-white border">
+          <TabsTrigger value="fabric" className="text-lg font-semibold data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            📦 FABRIC
+          </TabsTrigger>
+          <TabsTrigger value="trims" className="text-lg font-semibold data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+            ✂️ TRIMS
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Fabric Tab */}
+        <TabsContent value="fabric" className="space-y-6">
+          {fabricTables.map(table => (
+            <Card key={table.id}>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>{table.name}</CardTitle>
+                  {!isReadOnly && (
+                    <Button onClick={() => addFabricRow(table.id)} className="bg-green-600 hover:bg-green-700">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Row
+                    </Button>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-slate-100">
+                        {config.fabricTableFields.map(field => (
+                          <TableHead key={field.name} style={{ minWidth: field.width }}>
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                          </TableHead>
+                        ))}
+                        {!isReadOnly && <TableHead className="w-24 text-center">ACTIONS</TableHead>}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {table.items.map((item, rowIndex) => (
+                        <TableRow key={rowIndex}>
+                          {config.fabricTableFields.map(field => (
+                            <TableCell key={field.name}>
+                              {renderFormField(
+                                field,
+                                item[field.name] || '',
+                                (value) => updateFabricItem(table.id, rowIndex, field.name, value)
+                              )}
+                            </TableCell>
+                          ))}
+                          {!isReadOnly && (
+                            <TableCell className="text-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => deleteFabricRow(table.id, rowIndex)}
+                                className="text-red-600"
+                                disabled={table.items.length === 1}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+
+        {/* Trims Tab */}
+        <TabsContent value="trims" className="space-y-6">
+          {trimsTables.map(table => (
+            <Card key={table.id}>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>{table.name}</CardTitle>
+                  {!isReadOnly && (
+                    <Button onClick={() => addTrimsRow(table.id)} className="bg-purple-600 hover:bg-purple-700">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Row
+                    </Button>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="border rounded-lg overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-slate-100">
+                        {config.trimsTableFields.map(field => (
+                          <TableHead key={field.name} style={{ minWidth: field.width }}>
+                            {field.label}
+                            {field.required && <span className="text-red-500 ml-1">*</span>}
+                          </TableHead>
+                        ))}
+                        {!isReadOnly && <TableHead className="w-24 text-center">ACTIONS</TableHead>}
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {table.items.map((item, rowIndex) => (
+                        <TableRow key={rowIndex}>
+                          {config.trimsTableFields.map(field => (
+                            <TableCell key={field.name}>
+                              {renderFormField(
+                                field,
+                                item[field.name] || '',
+                                (value) => updateTrimsItem(table.id, rowIndex, field.name, value)
+                              )}
+                            </TableCell>
+                          ))}
+                          {!isReadOnly && (
+                            <TableCell className="text-center">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => deleteTrimsRow(table.id, rowIndex)}
+                                className="text-red-600"
+                                disabled={table.items.length === 1}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
