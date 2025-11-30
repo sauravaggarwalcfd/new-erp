@@ -69,7 +69,7 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
           }
         }}
       >
-        <div className="p-6 border-b border-blue-800">
+        <div className="p-6 border-b border-blue-800" onClick={(e) => e.stopPropagation()}>
           <div className="flex items-center justify-between gap-3">
             {!sidebarCollapsed && (
               <div className="flex items-center gap-3">
@@ -81,7 +81,7 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
               </div>
             )}
             {sidebarCollapsed && (
-              <div className="text-3xl mx-auto">🏭</div>
+              <div className="text-3xl mx-auto" title="Click to expand sidebar">🏭</div>
             )}
             <button
               onClick={(e) => {
