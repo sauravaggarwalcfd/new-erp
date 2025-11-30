@@ -90,7 +90,7 @@ export default function BOMManagement({ user, onLogout }) {
   if (showCreateForm) {
     return (
       <Layout user={user} onLogout={onLogout}>
-        <BOMCreate
+        <DynamicBOMForm
           onCancel={() => setShowCreateForm(false)}
           onSave={handleSaveBOM}
           mode="create"
@@ -102,10 +102,9 @@ export default function BOMManagement({ user, onLogout }) {
   if (viewMode === "view" || viewMode === "edit") {
     return (
       <Layout user={user} onLogout={onLogout}>
-        <BOMCreate
+        <DynamicBOMForm
           onCancel={handleCancelView}
           onSave={handleSaveBOM}
-          onEdit={handleEditBOM}
           mode={viewMode}
           initialData={selectedBOM}
         />
