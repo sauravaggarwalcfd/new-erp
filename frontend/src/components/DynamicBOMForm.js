@@ -222,6 +222,48 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
     setTrimsTables(updatedTables);
   };
 
+  const addNewTrimsTable = () => {
+    const newId = Math.max(...trimsTables.map(t => t.id), 0) + 1;
+    const newRow = {};
+    config.trimsTableFields.forEach(field => {
+      newRow[field.name] = field.defaultValue || '';
+    });
+    newRow.srNo = 1;
+
+    const newTable = {
+      id: newId,
+      name: `Trims Table ${newId}`,
+      items: [newRow]
+    };
+    setTrimsTables([...trimsTables, newTable]);
+    toast.success('New TRIMS table added');
+  };
+
+  const copyTrimsTable = (tableId) => {
+    const tableToCopy = trimsTables.find(t => t.id === tableId);
+    if (tableToCopy) {
+      const newId = Math.max(...trimsTables.map(t => t.id), 0) + 1;
+      const copiedTable = {
+        id: newId,
+        name: `${tableToCopy.name} (Copy)`,
+        items: tableToCopy.items.map(item => ({ ...item }))
+      };
+      setTrimsTables([...trimsTables, copiedTable]);
+      toast.success('TRIMS table copied successfully');
+    }
+  };
+
+  const deleteTrimsTable = (tableId) => {
+    if (trimsTables.length === 1) {
+      toast.error('Cannot delete the last table');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to delete this TRIMS table?')) return;
+
+    setTrimsTables(trimsTables.filter(t => t.id !== tableId));
+    toast.success('Table deleted successfully');
+  };
+
   const updateFabricItem = (tableId, rowIndex, fieldName, value) => {
     const updatedTables = fabricTables.map(table => {
       if (table.id === tableId) {
