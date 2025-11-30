@@ -115,51 +115,57 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
               </div>
               <Link
                 to="/"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/')}`}
                 data-testid="dashboard-link"
+                title="Dashboard"
               >
-                <span className="mr-3">📊</span>
-                <span>Dashboard</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>📊</span>
+                {!sidebarCollapsed && <span>Dashboard</span>}
               </Link>
               <Link
                 to="/masters"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/masters')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/masters')}`}
                 data-testid="masters-link"
+                title="Masters"
               >
-                <span className="mr-3">📋</span>
-                <span>Masters</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>📋</span>
+                {!sidebarCollapsed && <span>Masters</span>}
               </Link>
               <Link
                 to="/master-builder"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/master-builder')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/master-builder')}`}
                 data-testid="master-builder-link"
+                title="Master Builder"
               >
-                <span className="mr-3">🔧</span>
-                <span>Master Builder</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>🔧</span>
+                {!sidebarCollapsed && <span>Master Builder</span>}
               </Link>
               <Link
                 to="/boms"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/boms')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/boms')}`}
                 data-testid="bom-link"
+                title="BOM Management"
               >
-                <span className="mr-3">📦</span>
-                <span>BOM Management</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>📦</span>
+                {!sidebarCollapsed && <span>BOM Management</span>}
               </Link>
               <Link
                 to="/bom-form-builder"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/bom-form-builder')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/bom-form-builder')}`}
                 data-testid="bom-form-builder-link"
+                title="BOM Form Builder"
               >
-                <span className="mr-3">⚙️</span>
-                <span>BOM Form Builder</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>⚙️</span>
+                {!sidebarCollapsed && <span>BOM Form Builder</span>}
               </Link>
               <Link
                 to="/mrp"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/mrp')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/mrp')}`}
                 data-testid="mrp-link"
+                title="MRP Management"
               >
-                <span className="mr-3">📈</span>
-                <span>MRP Management</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>📈</span>
+                {!sidebarCollapsed && <span>MRP Management</span>}
               </Link>
             </div>
           )}
