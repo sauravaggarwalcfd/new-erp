@@ -129,6 +129,14 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
                 <span>BOM Management</span>
               </Link>
               <Link
+                to="/bom-form-builder"
+                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/bom-form-builder')}`}
+                data-testid="bom-form-builder-link"
+              >
+                <span className="mr-3">⚙️</span>
+                <span>BOM Form Builder</span>
+              </Link>
+              <Link
                 to="/mrp"
                 className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/mrp')}`}
                 data-testid="mrp-link"
