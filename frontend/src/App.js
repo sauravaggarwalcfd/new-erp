@@ -355,6 +355,18 @@ function App() {
             }
           />
           <Route
+            path="/bom-form-builder"
+            element={
+              user ? (
+                <UnifiedLayout user={user} onLogout={handleLogout}>
+                  <BOMFormBuilder user={user} onLogout={handleLogout} />
+                </UnifiedLayout>
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
             path="/tasks"
             element={
               user ? (
