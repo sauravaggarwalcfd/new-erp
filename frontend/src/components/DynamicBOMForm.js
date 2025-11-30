@@ -498,7 +498,7 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
         </div>
       </div>
 
-      <div className="max-w-full px-6 py-6 space-y-6">
+      <div className="max-w-full px-12 py-6 space-y-6 ml-4">
 
         {/* Header Section */}
         <Card>
