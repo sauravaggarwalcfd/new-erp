@@ -263,7 +263,7 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-blue-800 text-sm text-blue-300" onClick={(e) => e.stopPropagation()}>
+        <div className="p-4 border-t border-blue-800 text-sm text-blue-300">
           {!sidebarCollapsed ? (
             <>
               <div className="mb-3">
