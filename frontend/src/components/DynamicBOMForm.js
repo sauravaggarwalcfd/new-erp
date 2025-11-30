@@ -529,16 +529,48 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
 
         {/* Fabric Tab */}
         <TabsContent value="fabric" className="space-y-6">
+          {/* Table Management Buttons */}
+          {!isReadOnly && (
+            <div className="flex gap-3 mb-4">
+              <Button onClick={addNewFabricTable} className="bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Add New Table
+              </Button>
+            </div>
+          )}
+
           {fabricTables.map(table => (
             <Card key={table.id}>
               <CardHeader>
                 <div className="flex justify-between items-center">
-                  <CardTitle>{table.name}</CardTitle>
+                  <Input
+                    value={table.name}
+                    onChange={(e) => {
+                      const updatedTables = fabricTables.map(t =>
+                        t.id === table.id ? { ...t, name: e.target.value } : t
+                      );
+                      setFabricTables(updatedTables);
+                    }}
+                    className="font-semibold text-lg border-none shadow-none w-auto"
+                    disabled={isReadOnly}
+                  />
                   {!isReadOnly && (
-                    <Button onClick={() => addFabricRow(table.id)} className="bg-green-600 hover:bg-green-700">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Row
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={() => copyFabricTable(table.id)} variant="outline" size="sm">
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copy Table
+                      </Button>
+                      <Button onClick={() => addFabricRow(table.id)} className="bg-green-600 hover:bg-green-700" size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Row
+                      </Button>
+                      {fabricTables.length > 1 && (
+                        <Button onClick={() => deleteFabricTable(table.id)} variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete Table
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               </CardHeader>
