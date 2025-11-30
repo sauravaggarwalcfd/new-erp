@@ -8,6 +8,7 @@ import Masters from '@/components/Masters';
 import BOMManagement from '@/components/BOMManagement';
 import MRPManagement from '@/components/MRPManagement';
 import MasterBuilder from '@/components/MasterBuilder';
+import BOMFormBuilder from '@/components/BOMFormBuilder';
 import Tasks from './pages/TasksEnhanced';
 import Messages from './pages/Messages';
 import Groups from './pages/Groups';
