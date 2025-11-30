@@ -82,7 +82,7 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
             </div>
           </div>
         )}
-        <div className="p-6 border-b border-blue-800" onClick={(e) => e.stopPropagation()}>
+        <div className="p-6 border-b border-blue-800">
           <div className="flex items-center justify-between gap-3">
             {!sidebarCollapsed && (
               <div className="flex items-center gap-3">
