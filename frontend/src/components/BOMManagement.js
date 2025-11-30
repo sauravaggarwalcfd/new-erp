@@ -120,14 +120,25 @@ export default function BOMManagement({ user, onLogout }) {
             <h1 className="text-3xl font-bold text-slate-800">BOM Management</h1>
             <p className="text-slate-600 mt-1">Create and manage Bills of Materials</p>
           </div>
-          <Button
-            onClick={() => setShowCreateForm(true)}
-            className="bg-blue-600 hover:bg-blue-700"
-            data-testid="create-bom-button"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create BOM
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              onClick={() => window.location.href = '/bom-form-builder'}
+              variant="outline"
+              className="border-blue-600 text-blue-600 hover:bg-blue-50"
+              data-testid="configure-form-button"
+            >
+              <Settings className="w-4 h-4 mr-2" />
+              Configure Form
+            </Button>
+            <Button
+              onClick={() => setShowCreateForm(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+              data-testid="create-bom-button"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create BOM
+            </Button>
+          </div>
         </div>
 
         <Card>
