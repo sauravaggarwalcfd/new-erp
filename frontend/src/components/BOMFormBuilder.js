@@ -303,6 +303,25 @@ export default function BOMFormBuilder({ user, onLogout }) {
         </div>
       </div>
 
+      {/* Info Card */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-4">
+            <div className="text-4xl">ℹ️</div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg text-blue-900 mb-2">How This Works</h3>
+              <ul className="text-sm text-blue-800 space-y-1">
+                <li>• <strong>Configure fields here</strong> - Add, edit, delete, or reorder fields for your BOM sheet</li>
+                <li>• <strong>Link to Masters</strong> - Use "Master Dropdown" type to pull data from your masters (Fabric Master, Colors, Buyers, etc.)</li>
+                <li>• <strong>Auto-calculated fields</strong> - Use "Calculated Field" type with formulas like: quantity * unitPrice</li>
+                <li>• <strong>Click "Save Configuration"</strong> to apply changes</li>
+                <li>• <strong>Changes appear immediately</strong> in BOM Management → Create BOM form</li>
+              </ul>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Tabs for different sections */}
       <Tabs value={currentSection} onValueChange={setCurrentSection} className="w-full">
         <TabsList className="grid w-full grid-cols-3 h-14 bg-white border">
