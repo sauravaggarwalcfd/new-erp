@@ -178,43 +178,48 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
               </div>
               <Link
                 to="/tasks"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/tasks')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/tasks')}`}
                 data-testid="tasks-link"
+                title="Tasks"
               >
-                <span className="mr-3">📝</span>
-                <span>Tasks</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>📝</span>
+                {!sidebarCollapsed && <span>Tasks</span>}
               </Link>
               <Link
                 to="/messages"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/messages')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/messages')}`}
                 data-testid="messages-link"
+                title="Messages"
               >
-                <span className="mr-3">💬</span>
-                <span>Messages</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>💬</span>
+                {!sidebarCollapsed && <span>Messages</span>}
               </Link>
               <Link
                 to="/groups"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/groups')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/groups')}`}
                 data-testid="groups-link"
+                title="Groups"
               >
-                <span className="mr-3">👥</span>
-                <span>Groups</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>👥</span>
+                {!sidebarCollapsed && <span>Groups</span>}
               </Link>
               <Link
                 to="/notifications"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/notifications')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/notifications')}`}
                 data-testid="notifications-link"
+                title="Notifications"
               >
-                <span className="mr-3">🔔</span>
-                <span>Notifications</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>🔔</span>
+                {!sidebarCollapsed && <span>Notifications</span>}
               </Link>
               <Link
                 to="/analytics"
-                className={`flex items-center px-6 py-3 hover:bg-blue-800 transition ${isActive('/analytics')}`}
+                className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/analytics')}`}
                 data-testid="analytics-link"
+                title="Analytics"
               >
-                <span className="mr-3">📊</span>
-                <span>Analytics</span>
+                <span className={sidebarCollapsed ? '' : 'mr-3'}>📊</span>
+                {!sidebarCollapsed && <span>Analytics</span>}
               </Link>
             </div>
           )}
