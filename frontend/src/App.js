@@ -61,7 +61,14 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-300`}>
+      <div 
+        className={`${sidebarCollapsed ? 'w-16 cursor-pointer hover:bg-blue-800' : 'w-64'} bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-300 relative`}
+        onClick={() => {
+          if (sidebarCollapsed) {
+            setSidebarCollapsed(false);
+          }
+        }}
+      >
         <div className="p-6 border-b border-blue-800">
           <div className="flex items-center justify-between gap-3">
             {!sidebarCollapsed && (
