@@ -725,6 +725,7 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
           ))}
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
