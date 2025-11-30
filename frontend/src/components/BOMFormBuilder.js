@@ -283,10 +283,24 @@ export default function BOMFormBuilder({ user, onLogout }) {
           </h1>
           <p className="text-slate-600 mt-2">Configure Dyeing BOM Sheet fields and link to masters</p>
         </div>
-        <Button onClick={saveConfig} className="bg-green-600 hover:bg-green-700" disabled={loading}>
-          <Save className="w-4 h-4 mr-2" />
-          Save Configuration
-        </Button>
+        <div className="flex gap-3">
+          <Button 
+            onClick={() => {
+              if (window.confirm('Reset to default configuration? This will replace all current fields.')) {
+                setConfig(getDefaultConfig());
+                toast.info('Configuration reset to defaults. Click Save to apply.');
+              }
+            }} 
+            variant="outline"
+            disabled={loading}
+          >
+            Reset to Defaults
+          </Button>
+          <Button onClick={saveConfig} className="bg-green-600 hover:bg-green-700" disabled={loading}>
+            <Save className="w-4 h-4 mr-2" />
+            Save Configuration
+          </Button>
+        </div>
       </div>
 
       {/* Tabs for different sections */}
