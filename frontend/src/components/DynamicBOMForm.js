@@ -580,9 +580,9 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="border rounded-lg overflow-x-auto">
-                  <Table>
+              <CardContent className="p-0">
+                <div className="w-full overflow-x-auto">
+                  <Table className="w-full">
                     <TableHeader>
                       <TableRow className="bg-slate-100">
                         {config.fabricTableFields.map(field => (
@@ -676,9 +676,9 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                   )}
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="border rounded-lg overflow-x-auto">
-                  <Table>
+              <CardContent className="p-0">
+                <div className="w-full overflow-x-auto">
+                  <Table className="w-full">
                     <TableHeader>
                       <TableRow className="bg-slate-100">
                         {config.trimsTableFields.map(field => (
