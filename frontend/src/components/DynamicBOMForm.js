@@ -120,6 +120,18 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
     }
   };
 
+  // Update image when article is selected
+  useEffect(() => {
+    if (headerData.artNo && masterData.articles) {
+      const selectedArticle = masterData.articles.find(
+        art => art.id === headerData.artNo || art.code === headerData.artNo
+      );
+      if (selectedArticle && selectedArticle.image && !headerData.imageReference) {
+        setHeaderData(prev => ({ ...prev, imageReference: selectedArticle.image }));
+      }
+    }
+  }, [headerData.artNo, masterData.articles]);
+
   const handleHeaderChange = (fieldName, value) => {
     setHeaderData({ ...headerData, [fieldName]: value });
   };
