@@ -625,16 +625,48 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
 
         {/* Trims Tab */}
         <TabsContent value="trims" className="space-y-6">
+          {/* Table Management Buttons */}
+          {!isReadOnly && (
+            <div className="flex gap-3 mb-4">
+              <Button onClick={addNewTrimsTable} className="bg-purple-600 hover:bg-purple-700">
+                <Plus className="w-4 h-4 mr-2" />
+                Add New Table
+              </Button>
+            </div>
+          )}
+
           {trimsTables.map(table => (
             <Card key={table.id}>
               <CardHeader>
                 <div className="flex justify-between items-center">
-                  <CardTitle>{table.name}</CardTitle>
+                  <Input
+                    value={table.name}
+                    onChange={(e) => {
+                      const updatedTables = trimsTables.map(t =>
+                        t.id === table.id ? { ...t, name: e.target.value } : t
+                      );
+                      setTrimsTables(updatedTables);
+                    }}
+                    className="font-semibold text-lg border-none shadow-none w-auto"
+                    disabled={isReadOnly}
+                  />
                   {!isReadOnly && (
-                    <Button onClick={() => addTrimsRow(table.id)} className="bg-purple-600 hover:bg-purple-700">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Row
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button onClick={() => copyTrimsTable(table.id)} variant="outline" size="sm">
+                        <Copy className="w-4 h-4 mr-2" />
+                        Copy Table
+                      </Button>
+                      <Button onClick={() => addTrimsRow(table.id)} className="bg-purple-600 hover:bg-purple-700" size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Row
+                      </Button>
+                      {trimsTables.length > 1 && (
+                        <Button onClick={() => deleteTrimsTable(table.id)} variant="outline" size="sm" className="text-red-600 hover:text-red-700">
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete Table
+                        </Button>
+                      )}
+                    </div>
                   )}
                 </div>
               </CardHeader>
