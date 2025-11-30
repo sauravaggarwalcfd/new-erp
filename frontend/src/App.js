@@ -79,32 +79,34 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
         </div>
 
         {/* Tab Selector */}
-        <div className="p-4 border-b border-blue-800">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActiveTab('erp')}
-              className={`flex-1 py-2 px-3 rounded-lg font-semibold text-sm transition ${
-                activeTab === 'erp'
-                  ? 'bg-blue-600 text-white shadow-lg'
-                  : 'bg-blue-800 text-blue-300 hover:bg-blue-700'
-              }`}
-              data-testid="erp-tab-button"
-            >
-              🏭 ERP
-            </button>
-            <button
-              onClick={() => setActiveTab('tasks')}
-              className={`flex-1 py-2 px-3 rounded-lg font-semibold text-sm transition ${
-                activeTab === 'tasks'
-                  ? 'bg-green-600 text-white shadow-lg'
-                  : 'bg-blue-800 text-blue-300 hover:bg-blue-700'
-              }`}
-              data-testid="tasks-tab-button"
-            >
-              📝 Tasks
-            </button>
+        {!sidebarCollapsed && (
+          <div className="p-4 border-b border-blue-800">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveTab('erp')}
+                className={`flex-1 py-2 px-3 rounded-lg font-semibold text-sm transition ${
+                  activeTab === 'erp'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-blue-800 text-blue-300 hover:bg-blue-700'
+                }`}
+                data-testid="erp-tab-button"
+              >
+                🏭 ERP
+              </button>
+              <button
+                onClick={() => setActiveTab('tasks')}
+                className={`flex-1 py-2 px-3 rounded-lg font-semibold text-sm transition ${
+                  activeTab === 'tasks'
+                    ? 'bg-green-600 text-white shadow-lg'
+                    : 'bg-blue-800 text-blue-300 hover:bg-blue-700'
+                }`}
+                data-testid="tasks-tab-button"
+              >
+                📝 Tasks
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         <nav className="flex-1 overflow-y-auto py-4">
           {/* ERP Section */}
