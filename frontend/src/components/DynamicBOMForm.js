@@ -409,7 +409,7 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
       case 'dropdown':
         return (
           <select
-            className="flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="flex h-9 w-full rounded-md border border-slate-300 bg-white px-2 py-1 text-sm"
             value={value}
             onChange={(e) => onChange(e.target.value)}
             disabled={isReadOnly}
