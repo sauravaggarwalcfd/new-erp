@@ -582,8 +582,8 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-0">
-                <div className="w-full overflow-x-auto">
+              <CardContent className="p-6">
+                <div className="w-full overflow-x-auto shadow-inner rounded-lg border border-slate-200">
                   <Table className="w-full">
                     <TableHeader>
                       <TableRow className="bg-slate-100">
@@ -687,8 +687,8 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="p-0">
-                <div className="w-full overflow-x-auto">
+              <CardContent className="p-6">
+                <div className="w-full overflow-x-auto shadow-inner rounded-lg border border-slate-200">
                   <Table className="w-full">
                     <TableHeader>
                       <TableRow className="bg-slate-100">
