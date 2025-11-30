@@ -63,6 +63,8 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
     cfg.headerFields.forEach(field => {
       initialHeader[field.name] = field.defaultValue || '';
     });
+    // Add sketchImage field
+    initialHeader.sketchImage = '';
     setHeaderData(initialHeader);
 
     // Initialize first row for fabric table
