@@ -44,6 +44,14 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
     } else {
       setActiveTab('erp');
     }
+
+    // Auto-minimize sidebar on data entry pages
+    const dataEntryRoutes = ['/boms', '/mrp', '/master-builder'];
+    const shouldAutoCollapse = dataEntryRoutes.some(route => location.pathname.startsWith(route));
+    
+    if (shouldAutoCollapse && !sidebarCollapsed) {
+      setSidebarCollapsed(true);
+    }
   }, [location.pathname]);
 
   const isActive = (path) => {
