@@ -55,12 +55,26 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
       {/* Sidebar */}
       <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-300`}>
         <div className="p-6 border-b border-blue-800">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">🏭</div>
-            <div>
-              <h1 className="text-xl font-bold">GarmentERP</h1>
-              <p className="text-xs text-blue-300">Manufacturing System</p>
-            </div>
+          <div className="flex items-center justify-between gap-3">
+            {!sidebarCollapsed && (
+              <div className="flex items-center gap-3">
+                <div className="text-3xl">🏭</div>
+                <div>
+                  <h1 className="text-xl font-bold">GarmentERP</h1>
+                  <p className="text-xs text-blue-300">Manufacturing System</p>
+                </div>
+              </div>
+            )}
+            {sidebarCollapsed && (
+              <div className="text-3xl mx-auto">🏭</div>
+            )}
+            <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              className="text-blue-300 hover:text-white transition-colors p-1"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? '→' : '←'}
+            </button>
           </div>
         </div>
 
