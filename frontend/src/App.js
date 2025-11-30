@@ -84,9 +84,12 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
               <div className="text-3xl mx-auto">🏭</div>
             )}
             <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="text-blue-300 hover:text-white transition-colors p-1"
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSidebarCollapsed(!sidebarCollapsed);
+              }}
+              className="text-blue-300 hover:text-white transition-colors p-2 rounded hover:bg-blue-800"
+              title={sidebarCollapsed ? "Click anywhere to expand" : "Collapse sidebar"}
             >
               {sidebarCollapsed ? '→' : '←'}
             </button>
