@@ -477,20 +477,26 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <Button variant="ghost" onClick={onCancel}>
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back
-        </Button>
-        {!isReadOnly && (
-          <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-            <Save className="w-4 h-4 mr-2" />
-            Save BOM
-          </Button>
-        )}
+    <div className="min-h-screen bg-slate-50 -m-8">
+      {/* Fixed Header */}
+      <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
+        <div className="max-w-full px-6 py-4">
+          <div className="flex justify-between items-center">
+            <Button variant="ghost" onClick={onCancel}>
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Back to BOM Management
+            </Button>
+            {!isReadOnly && (
+              <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
+                <Save className="w-4 h-4 mr-2" />
+                Save BOM
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
+
+      <div className="max-w-full px-6 py-6 space-y-6">
 
       {/* Header Section */}
       <Card>
