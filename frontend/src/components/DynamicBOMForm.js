@@ -390,6 +390,7 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
             onChange={(e) => onChange(e.target.value)}
             placeholder={field.placeholder}
             disabled={isReadOnly}
+            className="h-9 text-sm"
           />
         );
 
