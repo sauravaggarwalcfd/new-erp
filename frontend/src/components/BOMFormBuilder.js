@@ -65,12 +65,20 @@ export default function BOMFormBuilder({ user, onLogout }) {
     setLoading(true);
     try {
       const response = await axios.get(`${API}/bom-form-config`);
-      if (response.data) {
+      if (response.data && response.data.headerFields) {
         setConfig(response.data);
+      } else {
+        // If config doesn't exist, create default and save it
+        const defaultConfig = getDefaultConfig();
+        setConfig(defaultConfig);
+        // Auto-save default configuration
+        await axios.post(`${API}/bom-form-config`, defaultConfig);
+        toast.success('BOM Form initialized with default fields');
       }
     } catch (error) {
       // If config doesn't exist, create default
-      setConfig(getDefaultConfig());
+      const defaultConfig = getDefaultConfig();
+      setConfig(defaultConfig);
     } finally {
       setLoading(false);
     }
