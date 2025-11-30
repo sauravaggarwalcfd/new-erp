@@ -1560,6 +1560,34 @@ async def upload_image(file: UploadFile = File(...), current_user: User = Depend
         raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")
 
 # Include router
+
+# BOM Form Configuration Routes
+@api_router.get("/bom-form-config")
+async def get_bom_form_config():
+    """Get BOM form configuration"""
+    config = await db.bom_form_configs.find_one({"type": "dyeing_bom"})
+    if not config:
+        return {}
+    config.pop("_id", None)
+    return config
+
+@api_router.post("/bom-form-config")
+async def save_bom_form_config(config: dict):
+    """Save BOM form configuration"""
+    try:
+        config["type"] = "dyeing_bom"
+        config["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        await db.bom_form_configs.update_one(
+            {"type": "dyeing_bom"},
+            {"$set": config},
+            upsert=True
+        )
+        
+        return {"message": "Configuration saved successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving configuration: {str(e)}")
+
 app.include_router(api_router)
 
 # Mount static files for image serving
