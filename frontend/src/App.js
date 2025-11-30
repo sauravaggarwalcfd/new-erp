@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, Link, useLocation } from 'react
 import axios from 'axios';
 import Login from '@/components/Login';
 import Dashboard from '@/components/Dashboard';
+import CorporateDashboard from '@/components/CorporateDashboard';
 import Masters from '@/components/Masters';
 import BOMManagement from '@/components/BOMManagement';
 import MRPManagement from '@/components/MRPManagement';
