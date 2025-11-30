@@ -586,12 +586,19 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                     <TableHeader>
                       <TableRow className="bg-slate-100">
                         {config.fabricTableFields.map(field => (
-                          <TableHead key={field.name} style={{ minWidth: field.width }}>
+                          <TableHead 
+                            key={field.name} 
+                            style={{ 
+                              minWidth: field.width || '150px',
+                              maxWidth: field.width || 'auto'
+                            }}
+                            className="text-xs font-semibold whitespace-nowrap px-2 py-3"
+                          >
                             {field.label}
                             {field.required && <span className="text-red-500 ml-1">*</span>}
                           </TableHead>
                         ))}
-                        {!isReadOnly && <TableHead className="w-24 text-center">ACTIONS</TableHead>}
+                        {!isReadOnly && <TableHead className="w-20 text-center text-xs font-semibold px-2 py-3">ACTIONS</TableHead>}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
