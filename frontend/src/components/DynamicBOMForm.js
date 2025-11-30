@@ -512,69 +512,153 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
 
       <div className="max-w-full px-12 py-6 space-y-6 ml-4">
 
-        {/* Article Image Display Section */}
-        {headerData.artNo && (
-          <Card className="bg-gradient-to-br from-blue-50 to-slate-50">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-6">
-                <div className="w-64 h-64 bg-white rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden flex-shrink-0">
+        {/* Article Image Display Section - Always Visible */}
+        <Card className="bg-gradient-to-br from-blue-50 via-white to-slate-50 border-2 border-blue-200">
+          <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+            <CardTitle className="text-xl flex items-center gap-2">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              ARTICLE IMAGE REFERENCE
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-8">
+            <div className="flex items-start gap-8">
+              {/* Image Display */}
+              <div className="flex-shrink-0">
+                <div className="w-80 h-80 bg-white rounded-xl border-4 border-blue-300 shadow-2xl overflow-hidden relative group">
                   {headerData.imageReference ? (
-                    <img 
-                      src={headerData.imageReference} 
-                      alt="Article Reference" 
-                      className="w-full h-full object-contain"
-                      onError={(e) => {
-                        e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"%3E%3Crect width="256" height="256" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="%2394a3b8"%3ENo Image%3C/text%3E%3C/svg%3E';
-                      }}
-                    />
+                    <>
+                      <img 
+                        src={headerData.imageReference} 
+                        alt="Article Reference" 
+                        className="w-full h-full object-contain bg-slate-50"
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"%3E%3Crect width="320" height="320" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="45%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="%2394a3b8"%3EImage Not Found%3C/text%3E%3Ctext x="50%25" y="55%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="%23cbd5e1"%3ECheck URL below%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                      {/* Image Info Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <p className="text-white text-xs font-medium truncate">{headerData.imageReference}</p>
+                      </div>
+                    </>
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-slate-100">
-                      <div className="text-center text-slate-400">
-                        <svg className="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+                      <div className="text-center text-slate-400 p-6">
+                        <svg className="w-24 h-24 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <p className="text-sm font-medium">No Image</p>
-                        <p className="text-xs">Add image reference below</p>
+                        <p className="text-lg font-semibold text-slate-500 mb-2">No Image Selected</p>
+                        <p className="text-sm text-slate-400">Enter image URL in the field below</p>
+                        <p className="text-xs text-slate-400 mt-2">Or select article to auto-load</p>
                       </div>
                     </div>
                   )}
+                  {/* Zoom Indicator */}
+                  {headerData.imageReference && (
+                    <div className="absolute top-2 right-2 bg-blue-600 text-white px-2 py-1 rounded-md text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                      320x320
+                    </div>
+                  )}
                 </div>
-                <div className="flex-1">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-slate-700 mb-1">Article Reference</h3>
-                    <p className="text-2xl font-bold text-blue-900">{headerData.artNo}</p>
+                {/* Image URL Input */}
+                <div className="mt-4">
+                  <Label className="text-sm font-semibold text-slate-700 mb-2 block">
+                    Image URL / Reference Link
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      type="text"
+                      value={headerData.imageReference || ''}
+                      onChange={(e) => handleHeaderChange('imageReference', e.target.value)}
+                      placeholder="https://example.com/image.jpg or paste image URL"
+                      disabled={isReadOnly}
+                      className="flex-1 h-10 border-2 border-slate-300 focus:border-blue-500"
+                    />
+                    {headerData.imageReference && !isReadOnly && (
+                      <Button
+                        onClick={() => handleHeaderChange('imageReference', '')}
+                        variant="outline"
+                        className="text-red-600 hover:bg-red-50"
+                        size="sm"
+                      >
+                        Clear
+                      </Button>
+                    )}
                   </div>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    {headerData.styleNumber && (
-                      <div>
-                        <span className="text-slate-600 font-medium">Style:</span>
-                        <span className="ml-2 text-slate-900 font-semibold">{headerData.styleNumber}</span>
+                  <p className="text-xs text-slate-500 mt-2">
+                    💡 Tip: Paste any image URL or select an article with image
+                  </p>
+                </div>
+              </div>
+
+              {/* Article Details */}
+              <div className="flex-1">
+                <div className="bg-white rounded-xl p-6 shadow-lg border border-slate-200">
+                  <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">BOM Information</h3>
+                  
+                  <div className="space-y-4">
+                    {headerData.artNo && (
+                      <div className="pb-4 border-b border-slate-200">
+                        <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Article Number</span>
+                        <span className="text-3xl font-bold text-blue-900">{headerData.artNo}</span>
                       </div>
                     )}
-                    {headerData.buyer && (
-                      <div>
-                        <span className="text-slate-600 font-medium">Buyer:</span>
-                        <span className="ml-2 text-slate-900 font-semibold">{headerData.buyer}</span>
+                    
+                    <div className="grid grid-cols-2 gap-6">
+                      {headerData.styleNumber && (
+                        <div>
+                          <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Style</span>
+                          <span className="text-lg font-bold text-slate-900">{headerData.styleNumber}</span>
+                        </div>
+                      )}
+                      {headerData.buyer && (
+                        <div>
+                          <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Buyer</span>
+                          <span className="text-lg font-bold text-slate-900">{headerData.buyer}</span>
+                        </div>
+                      )}
+                      {headerData.date && (
+                        <div>
+                          <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Date</span>
+                          <span className="text-base text-slate-700">{new Date(headerData.date).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                      {headerData.planQty && (
+                        <div>
+                          <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Plan Quantity</span>
+                          <span className="text-2xl font-bold text-green-600">{headerData.planQty}</span>
+                        </div>
+                      )}
+                      {headerData.setNo && (
+                        <div>
+                          <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Set Number</span>
+                          <span className="text-base text-slate-700">{headerData.setNo}</span>
+                        </div>
+                      )}
+                      {headerData.remarks && (
+                        <div className="col-span-2">
+                          <span className="text-xs font-semibold text-slate-500 uppercase block mb-1">Remarks</span>
+                          <span className="text-sm text-slate-600 italic">{headerData.remarks}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Status indicators */}
+                    <div className="pt-4 border-t border-slate-200 flex gap-3">
+                      <div className={`px-3 py-1 rounded-full text-xs font-semibold ${headerData.imageReference ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                        {headerData.imageReference ? '✓ Image Added' : '⚠ No Image'}
                       </div>
-                    )}
-                    {headerData.date && (
-                      <div>
-                        <span className="text-slate-600 font-medium">Date:</span>
-                        <span className="ml-2 text-slate-900">{headerData.date}</span>
+                      <div className={`px-3 py-1 rounded-full text-xs font-semibold ${headerData.artNo ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>
+                        {headerData.artNo ? '✓ Article Set' : '○ No Article'}
                       </div>
-                    )}
-                    {headerData.planQty && (
-                      <div>
-                        <span className="text-slate-600 font-medium">Plan Qty:</span>
-                        <span className="ml-2 text-slate-900 font-bold text-green-600">{headerData.planQty}</span>
-                      </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Header Section */}
         <Card>
