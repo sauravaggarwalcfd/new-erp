@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Layout from "@/components/Layout";
 import BOMCreate from "@/components/BOMCreate";
+import DynamicBOMForm from "@/components/DynamicBOMForm";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Plus, Trash2, Eye } from "lucide-react";
+import { Plus, Trash2, Eye, Settings } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
