@@ -112,9 +112,11 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
           {/* ERP Section */}
           {activeTab === 'erp' && (
             <div data-testid="erp-section">
-              <div className="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider">
-                ERP Management
-              </div>
+              {!sidebarCollapsed && (
+                <div className="px-6 py-2 text-xs font-semibold text-blue-400 uppercase tracking-wider">
+                  ERP Management
+                </div>
+              )}
               <Link
                 to="/"
                 className={`flex items-center ${sidebarCollapsed ? 'justify-center px-3' : 'px-6'} py-3 hover:bg-blue-800 transition ${isActive('/')}`}
