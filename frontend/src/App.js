@@ -62,19 +62,23 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <div 
-        className={`${sidebarCollapsed ? 'w-16 cursor-pointer hover:bg-blue-800' : 'w-64'} bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-300 relative group`}
-        onClick={() => {
-          if (sidebarCollapsed) {
-            setSidebarCollapsed(false);
-          }
-        }}
-        title={sidebarCollapsed ? "Click to expand sidebar" : ""}
+        className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-300 relative`}
       >
-        {/* Expand hint overlay when collapsed */}
+        {/* Clickable overlay when collapsed */}
         {sidebarCollapsed && (
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
-            <div className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-lg text-xs font-semibold">
-              Click to expand
+          <div 
+            className="absolute inset-0 z-50 cursor-pointer hover:bg-blue-800 hover:bg-opacity-30 transition-all group"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setSidebarCollapsed(false);
+            }}
+            title="Click anywhere to expand sidebar"
+          >
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              <div className="bg-blue-600 text-white px-3 py-2 rounded-lg shadow-lg text-xs font-semibold whitespace-nowrap">
+                ← Click to expand
+              </div>
             </div>
           </div>
         )}
