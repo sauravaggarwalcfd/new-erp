@@ -232,30 +232,45 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-blue-800">
-          <div className="mb-3">
-            <div className="text-xs text-blue-400 mb-1">Logged in as</div>
-            <div className="font-semibold text-sm">{user?.username || 'User'}</div>
-            <div className="text-xs text-blue-300">{user?.email}</div>
-          </div>
-          <div className="mb-3">
-            <span className="text-xs font-semibold">Active: </span>
-            <span
-              className={`px-2 py-1 rounded text-xs font-medium ${
-                activeTab === 'erp' ? 'bg-blue-600' : 'bg-green-600'
-              }`}
-            >
-              {activeTab === 'erp' ? '🏭 ERP Mode' : '📝 Tasks Mode'}
-            </span>
-          </div>
-          <button
-            onClick={onLogout}
-            className="w-full py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition"
-            data-testid="logout-button"
-          >
-            Logout
-          </button>
-          <p className="text-xs text-blue-400 mt-3 text-center">© 2025 GarmentERP</p>
+        <div className="p-4 border-t border-blue-800 text-sm text-blue-300">
+          {!sidebarCollapsed ? (
+            <>
+              <div className="mb-3">
+                <div className="text-xs text-blue-400 mb-1">Logged in as</div>
+                <div className="font-semibold text-sm">{user?.username || 'User'}</div>
+                <div className="text-xs text-blue-300">{user?.email}</div>
+              </div>
+              <div className="mb-3">
+                <span className="text-xs font-semibold">Active: </span>
+                <span
+                  className={`px-2 py-1 rounded text-xs font-medium ${
+                    activeTab === 'erp' ? 'bg-blue-600' : 'bg-green-600'
+                  }`}
+                >
+                  {activeTab === 'erp' ? '🏭 ERP Mode' : '📝 Tasks Mode'}
+                </span>
+              </div>
+              <button
+                onClick={onLogout}
+                className="w-full py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition"
+                data-testid="logout-button"
+              >
+                Logout
+              </button>
+              <p className="text-xs text-blue-400 mt-3 text-center">© 2025 GarmentERP</p>
+            </>
+          ) : (
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={onLogout}
+                className="w-full py-2 bg-red-600 hover:bg-red-700 rounded-lg text-sm font-medium transition flex items-center justify-center"
+                data-testid="logout-button"
+                title="Logout"
+              >
+                🚪
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
