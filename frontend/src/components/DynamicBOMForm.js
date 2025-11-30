@@ -138,6 +138,76 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
     setFabricTables(updatedTables);
   };
 
+  const addNewFabricTable = () => {
+    const newId = Math.max(...fabricTables.map(t => t.id), 0) + 1;
+    const newRow = {};
+    config.fabricTableFields.forEach(field => {
+      newRow[field.name] = field.defaultValue || '';
+    });
+    newRow.srNo = 1;
+
+    const newTable = {
+      id: newId,
+      name: `BOM Table ${newId}`,
+      items: [newRow]
+    };
+    setFabricTables([...fabricTables, newTable]);
+
+    // Auto-create corresponding TRIMS table
+    const newTrimsRow = {};
+    config.trimsTableFields.forEach(field => {
+      newTrimsRow[field.name] = field.defaultValue || '';
+    });
+    newTrimsRow.srNo = 1;
+
+    const newTrimsTable = {
+      id: newId,
+      name: `Trims for BOM Table ${newId}`,
+      items: [newTrimsRow]
+    };
+    setTrimsTables([...trimsTables, newTrimsTable]);
+
+    toast.success('New FABRIC and TRIMS tables added');
+  };
+
+  const copyFabricTable = (tableId) => {
+    const tableToCopy = fabricTables.find(t => t.id === tableId);
+    if (tableToCopy) {
+      const newId = Math.max(...fabricTables.map(t => t.id), 0) + 1;
+      const copiedTable = {
+        id: newId,
+        name: `${tableToCopy.name} (Copy)`,
+        items: tableToCopy.items.map(item => ({ ...item }))
+      };
+      setFabricTables([...fabricTables, copiedTable]);
+
+      // Auto-copy corresponding TRIMS table
+      const trimsToCopy = trimsTables.find(t => t.id === tableId);
+      if (trimsToCopy) {
+        const copiedTrimsTable = {
+          id: newId,
+          name: `Trims for ${tableToCopy.name} (Copy)`,
+          items: trimsToCopy.items.map(item => ({ ...item }))
+        };
+        setTrimsTables([...trimsTables, copiedTrimsTable]);
+      }
+
+      toast.success('FABRIC and TRIMS tables copied successfully');
+    }
+  };
+
+  const deleteFabricTable = (tableId) => {
+    if (fabricTables.length === 1) {
+      toast.error('Cannot delete the last table');
+      return;
+    }
+    if (!window.confirm('Are you sure you want to delete this FABRIC table and its corresponding TRIMS table?')) return;
+
+    setFabricTables(fabricTables.filter(t => t.id !== tableId));
+    setTrimsTables(trimsTables.filter(t => t.id !== tableId));
+    toast.success('Tables deleted successfully');
+  };
+
   const addTrimsRow = (tableId) => {
     const table = trimsTables.find(t => t.id === tableId);
     const newRow = {};
