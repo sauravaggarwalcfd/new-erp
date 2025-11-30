@@ -299,9 +299,7 @@ function App() {
             path="/"
             element={
               user ? (
-                <UnifiedLayout user={user} onLogout={handleLogout}>
-                  <Dashboard user={user} onLogout={handleLogout} />
-                </UnifiedLayout>
+                <CorporateDashboard user={user} />
               ) : (
                 <Navigate to="/login" replace />
               )
