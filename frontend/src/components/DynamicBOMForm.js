@@ -523,9 +523,13 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
             </CardTitle>
           </CardHeader>
           <CardContent className="p-8">
-            <div className="flex items-start gap-8">
-              {/* Image Display */}
+            <div className="flex items-start gap-6">
+              {/* Article Image Display */}
               <div className="flex-shrink-0">
+                <div className="mb-3 text-center">
+                  <h4 className="text-sm font-bold text-blue-900 uppercase tracking-wide">Article Image</h4>
+                  <p className="text-xs text-slate-500">From Article Master</p>
+                </div>
                 <div className="w-80 h-80 bg-white rounded-xl border-4 border-blue-300 shadow-2xl overflow-hidden relative group">
                   {headerData.imageReference ? (
                     <>
@@ -534,7 +538,7 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                         alt="Article Reference" 
                         className="w-full h-full object-contain bg-slate-50"
                         onError={(e) => {
-                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"%3E%3Crect width="320" height="320" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="45%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="%2394a3b8"%3EImage Not Found%3C/text%3E%3Ctext x="50%25" y="55%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="%23cbd5e1"%3ECheck URL below%3C/text%3E%3C/svg%3E';
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"%3E%3Crect width="320" height="320" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="45%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="%2394a3b8"%3EImage Not Found%3C/text%3E%3Ctext x="50%25" y="55%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="%23cbd5e1"%3EFrom Article Master%3C/text%3E%3C/svg%3E';
                         }}
                       />
                       {/* Image Info Overlay */}
@@ -548,9 +552,8 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                         <svg className="w-24 h-24 mx-auto mb-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <p className="text-lg font-semibold text-slate-500 mb-2">No Image Selected</p>
-                        <p className="text-sm text-slate-400">Enter image URL in the field below</p>
-                        <p className="text-xs text-slate-400 mt-2">Or select article to auto-load</p>
+                        <p className="text-lg font-semibold text-slate-500 mb-2">No Image</p>
+                        <p className="text-sm text-slate-400">Select article to auto-load</p>
                       </div>
                     </div>
                   )}
@@ -561,23 +564,70 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                     </div>
                   )}
                 </div>
-                {/* Image URL Input */}
+                <div className="mt-3 text-center">
+                  <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${headerData.imageReference ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}`}>
+                    {headerData.imageReference ? '✓ Loaded from Master' : '○ No Image'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Article Sketch Display */}
+              <div className="flex-shrink-0">
+                <div className="mb-3 text-center">
+                  <h4 className="text-sm font-bold text-purple-900 uppercase tracking-wide">Article Sketch</h4>
+                  <p className="text-xs text-slate-500">Technical Drawing/Sketch</p>
+                </div>
+                <div className="w-80 h-80 bg-white rounded-xl border-4 border-purple-300 shadow-2xl overflow-hidden relative group">
+                  {headerData.sketchImage ? (
+                    <>
+                      <img 
+                        src={headerData.sketchImage} 
+                        alt="Article Sketch" 
+                        className="w-full h-full object-contain bg-slate-50"
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320"%3E%3Crect width="320" height="320" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="45%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="%2394a3b8"%3ESketch Not Found%3C/text%3E%3Ctext x="50%25" y="55%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="%23cbd5e1"%3ECheck URL below%3C/text%3E%3C/svg%3E';
+                        }}
+                      />
+                      {/* Image Info Overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-purple-900/70 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <p className="text-white text-xs font-medium truncate">{headerData.sketchImage}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100">
+                      <div className="text-center text-purple-400 p-6">
+                        <svg className="w-24 h-24 mx-auto mb-4 text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                        <p className="text-lg font-semibold text-purple-500 mb-2">No Sketch</p>
+                        <p className="text-sm text-purple-400">Click link below to add</p>
+                      </div>
+                    </div>
+                  )}
+                  {/* Zoom Indicator */}
+                  {headerData.sketchImage && (
+                    <div className="absolute top-2 right-2 bg-purple-600 text-white px-2 py-1 rounded-md text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                      320x320
+                    </div>
+                  )}
+                </div>
+                {/* Sketch Image Input with Link */}
                 <div className="mt-4">
                   <Label className="text-sm font-semibold text-slate-700 mb-2 block">
-                    Image URL / Reference Link
+                    Sketch Image URL
                   </Label>
                   <div className="flex gap-2">
                     <Input
                       type="text"
-                      value={headerData.imageReference || ''}
-                      onChange={(e) => handleHeaderChange('imageReference', e.target.value)}
-                      placeholder="https://example.com/image.jpg or paste image URL"
+                      value={headerData.sketchImage || ''}
+                      onChange={(e) => handleHeaderChange('sketchImage', e.target.value)}
+                      placeholder="Paste sketch image URL here"
                       disabled={isReadOnly}
-                      className="flex-1 h-10 border-2 border-slate-300 focus:border-blue-500"
+                      className="flex-1 h-10 border-2 border-purple-300 focus:border-purple-500"
                     />
-                    {headerData.imageReference && !isReadOnly && (
+                    {headerData.sketchImage && !isReadOnly && (
                       <Button
-                        onClick={() => handleHeaderChange('imageReference', '')}
+                        onClick={() => handleHeaderChange('sketchImage', '')}
                         variant="outline"
                         className="text-red-600 hover:bg-red-50"
                         size="sm"
@@ -586,8 +636,35 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
                       </Button>
                     )}
                   </div>
+                  {!isReadOnly && (
+                    <div className="mt-2 flex gap-2">
+                      <a
+                        href="https://imgbb.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 hover:text-purple-700 hover:underline"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        Upload to ImgBB
+                      </a>
+                      <span className="text-xs text-slate-400">|</span>
+                      <a
+                        href="https://postimages.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-purple-600 hover:text-purple-700 hover:underline"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        PostImages
+                      </a>
+                    </div>
+                  )}
                   <p className="text-xs text-slate-500 mt-2">
-                    💡 Tip: Paste any image URL or select an article with image
+                    📎 Upload sketch to image host, then paste URL here
                   </p>
                 </div>
               </div>
