@@ -498,13 +498,13 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
 
       <div className="max-w-full px-6 py-6 space-y-6">
 
-      {/* Header Section */}
-      <Card>
-        <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
-          <CardTitle className="text-2xl">DYEING BOM SHEET</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-6">
-          <div className="grid grid-cols-4 gap-4">
+        {/* Header Section */}
+        <Card>
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
+            <CardTitle className="text-2xl">DYEING BOM SHEET</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {config.headerFields.map(field => (
               <div key={field.name} className="space-y-2">
                 <Label>
