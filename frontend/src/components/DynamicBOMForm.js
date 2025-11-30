@@ -500,10 +500,74 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
 
       <div className="max-w-full px-12 py-6 space-y-6 ml-4">
 
+        {/* Article Image Display Section */}
+        {headerData.artNo && (
+          <Card className="bg-gradient-to-br from-blue-50 to-slate-50">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-6">
+                <div className="w-64 h-64 bg-white rounded-lg border-2 border-blue-200 shadow-lg overflow-hidden flex-shrink-0">
+                  {headerData.imageReference ? (
+                    <img 
+                      src={headerData.imageReference} 
+                      alt="Article Reference" 
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256"%3E%3Crect width="256" height="256" fill="%23f1f5f9"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="%2394a3b8"%3ENo Image%3C/text%3E%3C/svg%3E';
+                      }}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-slate-100">
+                      <div className="text-center text-slate-400">
+                        <svg className="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <p className="text-sm font-medium">No Image</p>
+                        <p className="text-xs">Add image reference below</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-slate-700 mb-1">Article Reference</h3>
+                    <p className="text-2xl font-bold text-blue-900">{headerData.artNo}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    {headerData.styleNumber && (
+                      <div>
+                        <span className="text-slate-600 font-medium">Style:</span>
+                        <span className="ml-2 text-slate-900 font-semibold">{headerData.styleNumber}</span>
+                      </div>
+                    )}
+                    {headerData.buyer && (
+                      <div>
+                        <span className="text-slate-600 font-medium">Buyer:</span>
+                        <span className="ml-2 text-slate-900 font-semibold">{headerData.buyer}</span>
+                      </div>
+                    )}
+                    {headerData.date && (
+                      <div>
+                        <span className="text-slate-600 font-medium">Date:</span>
+                        <span className="ml-2 text-slate-900">{headerData.date}</span>
+                      </div>
+                    )}
+                    {headerData.planQty && (
+                      <div>
+                        <span className="text-slate-600 font-medium">Plan Qty:</span>
+                        <span className="ml-2 text-slate-900 font-bold text-green-600">{headerData.planQty}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Header Section */}
         <Card>
           <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
-            <CardTitle className="text-2xl">DYEING BOM SHEET</CardTitle>
+            <CardTitle className="text-2xl">DYEING BOM SHEET - HEADER DETAILS</CardTitle>
           </CardHeader>
           <CardContent className="pt-6">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
