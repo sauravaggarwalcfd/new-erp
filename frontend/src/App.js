@@ -35,6 +35,7 @@ axios.interceptors.request.use(
 const UnifiedLayout = ({ children, user, onLogout }) => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState('erp');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const tasksRoutes = ['/tasks', '/messages', '/groups', '/notifications'];
@@ -52,7 +53,7 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
-      <div className="w-64 bg-blue-900 text-white flex flex-col shadow-xl">
+      <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} bg-blue-900 text-white flex flex-col shadow-xl transition-all duration-300`}>
         <div className="p-6 border-b border-blue-800">
           <div className="flex items-center gap-3">
             <div className="text-3xl">🏭</div>
