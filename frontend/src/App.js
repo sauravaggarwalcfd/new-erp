@@ -126,7 +126,7 @@ const UnifiedLayout = ({ children, user, onLogout }) => {
           </div>
         )}
 
-        <nav className="flex-1 overflow-y-auto py-4">
+        <nav className="flex-1 overflow-y-auto py-4" onClick={(e) => e.stopPropagation()}>
           {/* ERP Section */}
           {activeTab === 'erp' && (
             <div data-testid="erp-section">
