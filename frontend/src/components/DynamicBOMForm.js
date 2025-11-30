@@ -482,7 +482,7 @@ export default function DynamicBOMForm({ onCancel, onSave, mode = 'create', init
     <div className="min-h-screen bg-slate-50 -m-8">
       {/* Fixed Header */}
       <div className="sticky top-0 z-10 bg-white border-b shadow-sm">
-        <div className="max-w-full px-6 py-4">
+        <div className="max-w-full px-12 py-4 ml-4">
           <div className="flex justify-between items-center">
             <Button variant="ghost" onClick={onCancel}>
               <ArrowLeft className="w-4 h-4 mr-2" />
